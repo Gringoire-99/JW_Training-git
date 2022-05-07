@@ -1,4 +1,6 @@
-firstcommit e
-hello errerre
-e
-eqew:
+<<<<<<< HEAD
+firstcommit 
+w
+w
+w
+hello
