@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("library_management_system.user")
-public class User {
-
+@TableName("library_management_system.borrow_record")
+public class BorrowRecord {
 }
