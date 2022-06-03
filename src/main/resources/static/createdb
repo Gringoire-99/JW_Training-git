@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS LibraryManagementSystem CHARACTER SET UTF8MB4;
-USE LibraryManagementSystem;
+CREATE DATABASE IF NOT EXISTS library_management_system CHARACTER SET UTF8MB4;
+USE library_management_system;
 CREATE TABLE IF NOT EXISTS book
 (
     book_id       INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -26,6 +26,6 @@ CREATE TABLE IF NOT EXISTS borrow_record
     borrow_date    DATE NOT NULL,
     return_date    DATE NOT NULL,
     CONSTRAINT CHECK ( return_date > borrow_record.borrow_date ),
-    CONSTRAINT FOREIGN KEY (borrow_book_ID) REFERENCES LibraryManagementSystem.book (book_id),
-    CONSTRAINT FOREIGN KEY (borrow_user_ID) REFERENCES LibraryManagementSystem.user (user_id)
+    CONSTRAINT FOREIGN KEY (borrow_book_ID) REFERENCES library_management_system.book (book_id),
+    CONSTRAINT FOREIGN KEY (borrow_user_ID) REFERENCES library_management_system.user (user_id)
 );
