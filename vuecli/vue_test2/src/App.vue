@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-fluid">
     <book-list></book-list>
     <search-pane></search-pane>
   </div>
@@ -13,6 +13,7 @@ export default {
   components: {
     SearchPane,
     bookList
+
   },
   data() {
     return {
@@ -25,6 +26,5 @@ export default {
 </script>
 
 <style>
-#app {
-}
+
 </style>

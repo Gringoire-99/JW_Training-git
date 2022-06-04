@@ -1,5 +1,5 @@
 <template>
-  <tr id="op">
+  <tr id="op" class="block col-md-4">
     <td id='bookID' @click="select($event)">ID</td>
     <td id="bookName" @click="select($event)">书名</td>
     <td id="bookAuthor" @click="select($event)">作者</td>
@@ -39,7 +39,6 @@ td:hover {
 }
 
 #op {
-  width: 80%;
   margin: 0 auto;
 }
 

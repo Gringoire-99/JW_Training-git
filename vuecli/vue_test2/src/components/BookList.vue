@@ -1,13 +1,12 @@
 <template>
-  <div id="bl">
+  <div id="bl" >
     <operate-pane @select="select" @selectOrder="selectedOrder"></operate-pane>
     <transition-group
-    appear
-    name="animate__animated animate__bounce"
-    enter-active-class="animate__bounceInDown"
-    leave-active-class="animate__zoomOutLeft">
-
-      <book-item v-for="book in filterList" :key="book.bookID" :book="book" ></book-item>
+        appear
+        name="animate__animated animate__bounce"
+        enter-active-class="animate__bounceInDown"
+        leave-active-class="animate__zoomOutLeft">
+      <book-item v-for="book in filterList" :key="book.bookID" :book="book" class="block col-md-4"></book-item>
     </transition-group>
     <span class="msg">正在使用：{{ selectedProp }} 进行{{ order === 'asc' ? '升序' : '降序' }}搜索</span>
   </div>
@@ -19,6 +18,7 @@ import BookItem from "@/components/BookItem";
 import pubsub from 'pubsub-js'
 import 'animate.css'
 import 'hover.css'
+
 export default {
   name: "BookList",
   components: {OperatePane, BookItem,},
@@ -26,7 +26,7 @@ export default {
     return {
       //数据源
       bookList: [
-        {bookID: '01', bookName: '西游记', bookAuthor: 'wcn', bookPrice: 19, bookNum: 200000, borrowNum: 15000},
+        {bookID: '01', bookName: '西游', bookAuthor: 'wcn', bookPrice: 19, bookNum: 200000, borrowNum: 15000},
         {bookID: '02', bookName: '三国', bookAuthor: 'xxx', bookPrice: 1999, bookNum: 2000, borrowNum: 1500},
         {bookID: '03', bookName: '红楼', bookAuthor: 'cxq', bookPrice: 19999, bookNum: 200, borrowNum: 150000},
         {bookID: '04', bookName: '水浒', bookAuthor: 'lgz', bookPrice: 199999, bookNum: 20, borrowNum: 15},
@@ -47,11 +47,11 @@ export default {
       this.order = id;
     }
   },
-  mounted(){
-    this.pID=pubsub.subscribe("keyWord",(_,keyWord)=>{
+  mounted() {
+    this.pID = pubsub.subscribe("keyWord", (_, keyWord) => {
       this.keyWord = keyWord
     })
-  },beforeDestroy(){
+  }, beforeDestroy() {
     pubsub.unsubscribe(this.pID)
   },
   computed: {
