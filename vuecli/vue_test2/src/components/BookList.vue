@@ -9,6 +9,7 @@
 <script>
 import OperatePane from "@/components/OperatePane";
 import BookItem from "@/components/BookItem";
+import pubsub from 'pubsub-js'
 
 export default {
   name: "BookList",
@@ -26,6 +27,7 @@ export default {
       selectedProp: 'bookName',
       //搜索的排序
       order: 'asc',
+      keyWord: '',
     }
   },
   //接收子组件的数据（emit）
@@ -37,13 +39,10 @@ export default {
       this.order = id;
     }
   },
-  //接收父组件的数据
-  props: {
-    //搜索关键词(空代表所有都符合条件)
-    keyWord: {
-      type: String,
-      default: ''
-    },
+  mounted(){
+    pubsub.subscribe("keyWord",(_,keyWord)=>{
+      this.keyWord = keyWord
+    })
   },
   computed: {
     //当参数发生变化时，生成新列表重新渲染

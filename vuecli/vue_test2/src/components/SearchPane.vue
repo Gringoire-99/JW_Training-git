@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import pubsub from 'pubsub-js'
+
 export default {
   name: "SearchPane",
   data() {
@@ -18,7 +20,7 @@ export default {
     keyWord: {
       immediate: true,
       handler(newKeyWord) {
-        this.$emit('search', newKeyWord)
+        pubsub.publish('keyWord',newKeyWord);
       }
     }
   },

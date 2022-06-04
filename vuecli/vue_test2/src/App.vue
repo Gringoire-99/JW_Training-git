@@ -1,14 +1,13 @@
 <template>
   <div>
-    <book-list :key-word="keyWord"></book-list>
-    <search-pane @search="search"></search-pane>
+    <book-list></book-list>
+    <search-pane></search-pane>
   </div>
 </template>
 
 <script>
 import bookList from "@/components/BookList";
 import SearchPane from "@/components/SearchPane";
-import pubsub from "pubsub.js";
 export default {
   name: 'App',
   components: {
@@ -17,15 +16,11 @@ export default {
   },
   data() {
     return {
-      keyWord: '',
     }
   },
-  //keyWord 来源：搜索子组件的emit， 绑定：列表子组件的keyWord
   methods: {
-    search(keyWord) {
-      this.keyWord = keyWord
-    }
-  }
+  },
+
 }
 </script>
 
