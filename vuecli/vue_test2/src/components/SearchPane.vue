@@ -1,7 +1,7 @@
 <template>
   <div>
-    <span>关键词<input v-model="keyWord" type="text">
-    </span>
+    <span>关键词<input v-model="keyWord" type="text"></span>
+    <slot name="request"></slot>
   </div>
 </template>
 
@@ -20,7 +20,7 @@ export default {
     keyWord: {
       immediate: true,
       handler(newKeyWord) {
-        pubsub.publish('keyWord',newKeyWord);
+        pubsub.publish('keyWord', newKeyWord);
       }
     }
   },
