@@ -8,7 +8,7 @@
 <script>
 import bookList from "@/components/BookList";
 import SearchPane from "@/components/SearchPane";
-
+import pubsub from "pubsub.js";
 export default {
   name: 'App',
   components: {
