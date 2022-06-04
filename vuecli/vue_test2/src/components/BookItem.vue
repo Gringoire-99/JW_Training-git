@@ -1,12 +1,12 @@
 <template>
-  <div id="BookItem">
+  <div id="BookItem" >
     <span>{{ book.bookID }}</span>
     <span>{{ book.bookName }}</span>
     <span>{{ book.bookAuthor }}</span>
     <span>{{ book.bookPrice }}</span>
     <span>{{ book.bookNum }}</span>
     <span>{{ book.borrowNum }}</span>
-    <img src="../assets/modify.png">
+    <img src="../assets/modify.png" @click="modify">
   </div>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   name: "BookItem",
   //读取参数book的属性删除标签
   props: ["book"],
+  methods:{
+    modify(){
+      console.log("修改")
+    }
+  }
 }
 </script>
 

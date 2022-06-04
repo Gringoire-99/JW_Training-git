@@ -1,7 +1,12 @@
 <template>
   <div id="bl">
     <operate-pane @select="select" @selectOrder="selectedOrder"></operate-pane>
-    <book-item v-for="book in filterList" :key="book.bookID" :book="book"></book-item>
+    <transition-group
+    appear
+    name="animate__animated animate__bounce"
+    enter-active-class="animate__bounceInDown">
+      <book-item v-for="book in filterList" :key="book.bookID" :book="book" class="button hvr-grow"></book-item>
+    </transition-group>
     <span class="msg">正在使用：{{ selectedProp }} 进行{{ order === 'asc' ? '升序' : '降序' }}搜索</span>
   </div>
 </template>
@@ -10,7 +15,8 @@
 import OperatePane from "@/components/OperatePane";
 import BookItem from "@/components/BookItem";
 import pubsub from 'pubsub-js'
-
+import 'animate.css'
+import 'hover.css'
 export default {
   name: "BookList",
   components: {OperatePane, BookItem,},
@@ -40,9 +46,11 @@ export default {
     }
   },
   mounted(){
-    pubsub.subscribe("keyWord",(_,keyWord)=>{
+    this.pID=pubsub.subscribe("keyWord",(_,keyWord)=>{
       this.keyWord = keyWord
     })
+  },beforeDestroy(){
+    pubsub.unsubscribe(this.pID)
   },
   computed: {
     //当参数发生变化时，生成新列表重新渲染
