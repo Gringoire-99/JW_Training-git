@@ -62,17 +62,6 @@ export default {
       }
     }
   }
-  // watch: {
-  //   keyWord: {
-  //     immediate: true,
-  //     handler(newkey) {
-  //       let arr = this.bookList.filter(b => {
-  //         return b.bookName.indexOf(newkey) != -1
-  //       });
-  //       this.filterList = arr
-  //     }
-  //   }
-  // }
 }
 </script>
 
