@@ -1,12 +1,15 @@
 <template>
   <div id="BookItem" >
-    <span>{{ book.bookID }}</span>
-    <span>{{ book.bookName }}</span>
-    <span>{{ book.bookAuthor }}</span>
-    <span>{{ book.bookPrice }}</span>
-    <span>{{ book.bookNum }}</span>
-    <span>{{ book.borrowNum }}</span>
-    <img src="../assets/modify.png" @click="modify">
+    <div class="hvr-grow-shadow">
+      <span>{{ book.bookID }}</span>
+      <span>{{ book.bookName }}</span>
+      <span>{{ book.bookAuthor }}</span>
+      <span>{{ book.bookPrice }}</span>
+      <span>{{ book.bookNum }}</span>
+      <span>{{ book.borrowNum }}</span>
+      <img src="../assets/modify.png" @click="modify">
+    </div>
+
   </div>
 </template>
 
@@ -38,9 +41,7 @@ img:hover {
 
 }
 
-#BookItem:hover {
-  background-color: rgba(191, 191, 199, 0.31);
-}
+
 
 #BookItem {
   overflow: hidden;

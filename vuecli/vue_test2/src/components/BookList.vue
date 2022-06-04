@@ -4,8 +4,10 @@
     <transition-group
     appear
     name="animate__animated animate__bounce"
-    enter-active-class="animate__bounceInDown">
-      <book-item v-for="book in filterList" :key="book.bookID" :book="book" class="button hvr-grow"></book-item>
+    enter-active-class="animate__bounceInDown"
+    leave-active-class="animate__zoomOutLeft">
+
+      <book-item v-for="book in filterList" :key="book.bookID" :book="book" ></book-item>
     </transition-group>
     <span class="msg">正在使用：{{ selectedProp }} 进行{{ order === 'asc' ? '升序' : '降序' }}搜索</span>
   </div>
