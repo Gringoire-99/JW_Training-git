@@ -1,17 +1,16 @@
 <template>
   <div>
-    <h1>登录页面</h1>
-  </div>
+    <h1>{{this.$route.query.msg}}</h1>
+</div>
 </template>
 
 <script>
 export default {
-  name: "LoginPage"
+  name: "helpDetail",
+
 }
 </script>
 
 <style scoped>
-div{
-  background-color: aquamarine;
-}
+
 </style>

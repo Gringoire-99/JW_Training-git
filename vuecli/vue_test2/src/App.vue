@@ -1,8 +1,9 @@
 <template>
   <div class="container-fluid">
     <navigate class="nav"></navigate>
-    <router-link to="/login">登录</router-link>
-    <router-link to="/bookManagement">图书管理</router-link>
+    <router-link active-class="activated" to="/homePage">登录</router-link>
+    <router-link active-class="activated" to="/bookManagement">图书管理</router-link>
+    <router-link active-class="activated" to="/help">帮助</router-link>
     <router-view></router-view>
   </div>
 </template>
@@ -25,7 +26,10 @@ export default {
 </script>
 
 <style>
-
+.activated{
+  border-style: solid;
+  border-color: #2098D1;
+}
 .nav {
   float: left;
 }
