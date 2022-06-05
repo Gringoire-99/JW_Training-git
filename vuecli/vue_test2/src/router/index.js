@@ -6,6 +6,8 @@ import Login from "@/components/Login";
 const routes = [
     {path: '/login', component: Login},
     {path: '/bookManagement', component: BookManagement},
+    {path: '/', component: Login},
+
 ]
 export default createRouter({
     history: createWebHashHistory(),
