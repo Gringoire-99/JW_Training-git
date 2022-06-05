@@ -1,6 +1,7 @@
 <template>
   <div>
     <span>关键词<input v-model="keyWord" type="text"></span>
+    <!--插槽语法：可以在此组件的内标签插入同名插槽（需要使用template标签指定姓名）-->
     <slot name="request"></slot>
   </div>
 </template>

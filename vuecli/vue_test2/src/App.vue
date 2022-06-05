@@ -1,35 +1,32 @@
 <template>
   <div class="container-fluid">
-    <book-list></book-list>
-    <search-pane>
-      <template v-slot:request>
-        <request-pane></request-pane>
-      </template>
-    </search-pane>
+    <navigate class="nav"></navigate>
+    <router-link to="/login">登录</router-link>
+    <router-link to="/bookManagement">图书管理</router-link>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import bookList from "@/components/BookList";
-import SearchPane from "@/components/SearchPane";
-import RequestPane from "@/components/RequestPane";
+import Navigate from "@/components/Navigate";
 export default {
   name: 'App',
   components: {
-    RequestPane,
-    SearchPane,
-    bookList
+    Navigate
   },
   data() {
-    return {
-    }
+    return {}
   },
-  methods: {
-  },
+  methods: {},
+  mounted() {
+  }
 
 }
 </script>
 
 <style>
 
+.nav {
+  float: left;
+}
 </style>

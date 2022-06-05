@@ -4,6 +4,8 @@
     "axios": "^0.27.2",
     "bootstrap": "^5.1.3",
     "hover.css": "^2.3.2",
-    "pubsub-js": "^1.9.4"
+    "pubsub-js": "^1.9.4",
+    "vue-router": "^4.0.15",
+    "vuex": "^4.0.2"
   }
 }

@@ -3,17 +3,13 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: "RequestPane",
   methods:{
     test(){
-      axios.get('/host/http://localhost:8080/t1').then((response=>{
-        console.log("请求成功，数据为："+response.data)
-      }),error=>{
-        console.log("请求失败，数据为："+error.message)
-      })
+      // 标记/host/表示要被代理服务器发送到目的服务器
+      this.$store.dispatch('getBookList')
     }
   }
 }
