@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import OperatePane from "@/components/OperatePane";
-import BookItem from "@/components/BookItem";
+import OperatePane from "@/components/Example/OperatePane";
+import BookItem from "@/components/Example/BookItem";
 import pubsub from 'pubsub-js'
-import 'animate.css'
-import 'hover.css'
+import '../../../node_modules/animate.css/animate.css'
+import '../../../node_modules/hover.css/css/hover.css'
 export default {
   name: "BookList",
   components: {OperatePane, BookItem,},

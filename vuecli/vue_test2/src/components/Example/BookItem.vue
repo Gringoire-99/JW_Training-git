@@ -7,7 +7,7 @@
       <span>{{ book.bookPrice }}</span>
       <span>{{ book.bookNum }}</span>
       <span>{{ book.borrowNum }}</span>
-      <img src="../assets/modify.png" @click="modify">
+      <img src="../../assets/modify.png" @click="modify">
     </div>
 
   </div>
