@@ -81,8 +81,6 @@
 <script>
 import 'animate.css'
 import 'hover.css'
-
-
 export default {
   name: "testPage",
   data() {
