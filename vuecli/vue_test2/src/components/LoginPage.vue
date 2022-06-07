@@ -31,7 +31,7 @@
                     content="请输入您的密码"
                     placement="right-start"
                 >
-                <el-input v-model="form.password" type="password" show-password/>
+                  <el-input v-model="form.password" type="password" show-password/>
                 </el-tooltip>
               </el-form-item>
               <el-form-item>
@@ -55,18 +55,18 @@
             </transition>
             <p></p>
 
-                <el-alert v-show="loginStatusSuccess" @close="loginStatusSuccess=false"
-                          title="登录成功"
-                          type="success"
-                          description="点击跳转到图书模块"
-                          show-icon
-                />
-                <el-alert v-show="loginStatusFail" @close="loginStatusFail=false"
-                          title="登录失败"
-                          type="error"
-                          description="学号或密码错误！"
-                          show-icon
-                />
+            <el-alert v-show="loginStatusSuccess" @close="loginStatusSuccess=false"
+                      title="登录成功"
+                      type="success"
+                      :description="loginMessage"
+                      show-icon
+            />
+            <el-alert v-show="loginStatusFail" @close="loginStatusFail=false"
+                      title="登录失败"
+                      type="error"
+                      :description="loginMessage"
+                      show-icon
+            />
 
           </el-main>
 
@@ -89,7 +89,7 @@
             <h1>
               <div class="hvr-grow-shadow">
                 登录你的<span style="color: #2a35ff">账号！</span><br>
-              Getting Started With LMS
+                Getting Started With LMS
               </div>
 
               <p></p>
@@ -125,9 +125,14 @@ export default {
   },
   methods: {
     submit() {
-      this.checkInput()
-      let id = this.id;
-      let password = this.password
+      let id = this.form.id;
+      let password = this.form.password
+      if (id.length === 0 || password.length === 0) {
+        this.loginStatusFail = true
+        this.loginStatusSuccess = false
+        this.loginMessage = "学号或密码不能为空"
+        return
+      }
       axios.get('http://localhost:8080/login', {
         params: {
           id,
@@ -136,7 +141,7 @@ export default {
       }).then(response => {
         this.loginStatusSuccess = true
         this.loginStatusFail = false
-        this.loginMessage = response.status
+        this.loginMessage = "成功状态" + response.status
       }).catch(() => {
         this.loginStatusFail = true
         this.loginStatusSuccess = false
@@ -152,10 +157,9 @@ export default {
       this.showDetail = false
 
     },
-    checkInput(){
-        alert(this.id)
-    }
+
   },
+
 
 }
 </script>
