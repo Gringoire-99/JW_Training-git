@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-container class="items-center ">
+    <el-container class="items-center " height="100%">
       <el-aside width="200px">
         <el-scrollbar>
-          <el-menu :default-openeds="['1']">
+          <el-menu :default-openeds="['1','2']">
 
             <el-sub-menu index="1" class="hvr-radial-out" >
               <template #title>
