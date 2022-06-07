@@ -1,16 +1,16 @@
 <template>
   <div>
-    <test-page></test-page>
+    <main-page></main-page>
   </div>
 </template>
 
 <script>
 
-import TestPage from "@/components/testPage";
+import MainPage from "@/components/MainPage";
 export default {
   name: 'App',
   components: {
-    TestPage
+    MainPage
   }
 }
 </script>

@@ -82,7 +82,7 @@
 import 'animate.css'
 import 'hover.css'
 export default {
-  name: "testPage",
+  name: "MainPage",
   data() {
     return {}
   },

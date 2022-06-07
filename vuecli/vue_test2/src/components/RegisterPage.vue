@@ -20,7 +20,7 @@
                     content="请输入您的学号"
                     placement="right-start"
                 >
-                  <el-input v-model="form.name"/>
+                  <el-input v-model="form.id" type="number"/>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="用户姓名">
@@ -40,11 +40,11 @@
                     content="请输入您的密码"
                     placement="right-start"
                 >
-                <el-input v-model="form.password" type="password"/>
+                  <el-input v-model="form.password" type="password" show-password/>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="用户类型">
-                <el-select v-model="form.gender" placeholder="选择你的角色">
+                <el-select v-model="form.role" placeholder="选择你的角色">
                   <el-option label="普通用户" value="user"/>
                   <el-option label="管理员" value="admin"/>
                 </el-select>
@@ -54,6 +54,20 @@
                 <el-button>取消</el-button>
               </el-form-item>
             </el-form>
+            <p></p>
+
+            <el-alert v-show="registerSuccessStatus" @close="registerSuccessStatus=false"
+                      title="注册成功"
+                      type="success"
+                      :description="registerMessage"
+                      show-icon
+            />
+            <el-alert v-show="registerFailStatus" @close="registerFailStatus=false"
+                      title="注册失败"
+                      type="error"
+                      :description="registerMessage"
+                      show-icon
+            />
           </el-main>
         </el-container>
       </el-col>
@@ -89,22 +103,50 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "RegisterPage",
   data() {
     return {
       form: {
-        id:'',
+        id: '',
         name: '',
         password: '',
-        role:''
-
-      }
+        role: ''
+      },
+      registerSuccessStatus: false,
+      registerFailStatus: false,
+      registerMessage: ''
     }
   },
   methods: {
     submit() {
-      alert("注册成功")
+      let id = this.form.id;
+      let name = this.form.name;
+      let pwd = this.form.password;
+      let role = this.form.role;
+      if (id.length===0||name.length===0||pwd.length===0||role.length===0){
+        this.registerSuccessStatus = false;
+        this.registerFailStatus = true;
+        this.registerMessage = "有空选项"
+      }
+      axios.get('http://localhost:8080/register', {
+        params: {
+          id,
+          name,
+          pwd,
+          role
+        }
+      }).then(response => {
+        this.registerSuccessStatus = true
+        this.registerFailStatus = false
+        this.registerMessage = "成功状态" + response.status
+      }).catch(() => {
+        this.registerFailStatus = true
+        this.registerSuccessStatus = false
+
+      })
+
     }
   }
 }

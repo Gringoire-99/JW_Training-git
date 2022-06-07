@@ -10,16 +10,12 @@ import JoinUsPage from "@/components/StaticPage/JoinUsPage";
 import TeamPage from "@/components/StaticPage/TeamPage";
 
 const routes = [
-    // {path: '/homePage', component: homePage, children: [{path: 'login', component: login}, {path: 'register', component: register}]
-    // },
-    // {path: '/bookManagement', component: BookManagement},
-    // {path: '/', component: homePage},
-    // {path: '/help', component: helpPage, children: [{path: 'detail', component: helpDetail}]}
+
     {path: '/', component: HomePage},
     {
         name: 'HomePage',
         path: '/HomePage',
-        component: HomePage
+        component: HomePage,
     },
     {
         name: 'UserPage',

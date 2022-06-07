@@ -7,7 +7,6 @@
           enter-active-class="animate__bounceIn"
           leave-active-class="animate__bounceOut">
         <el-container @mouseleave="close">
-
           <el-header class="hvr-fade">
             <h4>登录账号</h4>
           </el-header>
@@ -86,14 +85,13 @@
             <div class="separate"></div>
           </aside>
           <main>
-            <h1>
-              <div class="hvr-grow-shadow">
+            <div class="hvr-grow-shadow">
+              <h1>
                 登录你的<span style="color: #2a35ff">账号！</span><br>
                 Getting Started With LMS
-              </div>
-
-              <p></p>
-            </h1>
+              </h1>
+            </div>
+            <p></p>
             <img src="../assets/loginImg.svg" style="width: 500px" class="hvr-grow-shadow">
           </main>
         </el-container>
