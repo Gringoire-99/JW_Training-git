@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import OperatePane from "@/components/Example/OperatePane";
-import BookItem from "@/components/Example/BookItem";
+import OperatePane from "@/components/OldStuff/OperatePane";
+import BookItem from "@/components/OldStuff/BookItem";
 import pubsub from 'pubsub-js'
 import '../../../node_modules/animate.css/animate.css'
 import '../../../node_modules/hover.css/css/hover.css'

@@ -11,9 +11,9 @@
 </template>
 
 <script>
-import bookList from "@/components/Example/BookList";
-import SearchPane from "@/components/Example/SearchPane";
-import RequestPane from "@/components/Example/RequestPane";
+import bookList from "@/components/OldStuff/BookList";
+import SearchPane from "@/components/OldStuff/SearchPane";
+import RequestPane from "@/components/OldStuff/RequestPane";
 
 export default {
   name: "BookManagement",

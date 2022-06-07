@@ -92,7 +92,7 @@
               </h1>
             </div>
             <p></p>
-            <img src="../assets/loginImg.svg" style="width: 500px" class="hvr-grow-shadow">
+            <img src="../../assets/loginImg.svg" style="width: 500px" class="hvr-grow-shadow">
           </main>
         </el-container>
       </el-col>
