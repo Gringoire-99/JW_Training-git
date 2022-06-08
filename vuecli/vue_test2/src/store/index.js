@@ -28,11 +28,17 @@ const mutations = {
 const state = {
     count:0,
     bookList: [
-        {bookId: '01', bookName: '西游', bookAuthor: 'wcn', bookPrice: 52, bookNumber: 2050, borrowNumber: 650,press:'新华出版社'},
+        {bookId: '01', bookName: '西游记', bookAuthor: 'wcn', bookPrice: 52, bookNumber: 2050, borrowNumber: 650,press:'新华出版社'},
         {bookId: '02', bookName: '三国', bookAuthor: 'xxx', bookPrice: 32, bookNumber: 2000, borrowNumber: 1500,press:'新华出版社'},
         {bookId: '03', bookName: '红楼', bookAuthor: 'cxq', bookPrice: 65, bookNumber: 200, borrowNumber: 150000,press:'新华出版社'},
         {bookId: '04', bookName: '水浒', bookAuthor: 'lgz', bookPrice: 33, bookNumber: 20, borrowNumber: 15,press:'新华出版社'},
     ],
+    comments:[
+        {name:'009',comment:"很好看，孩子很喜欢"},
+        {name:'cat',comment:"经典"},
+        {name:'fish',comment:"非常喜欢"},
+        {name:'meme',comment:"经典"},
+    ]
 }
 export const store = Vuex.createStore({
     state,

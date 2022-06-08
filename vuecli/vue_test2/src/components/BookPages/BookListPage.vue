@@ -36,8 +36,14 @@
         </el-header>
         <el-main>
 
-          <el-table :data="bookList" style="width: 100%">
-
+          <el-table :data="bookList" style="width: 100%"
+                    :stripe="true"
+                    :border="true"
+                    height="700"
+                    max-height="700"
+                    :default-sort="{ prop: 'bookId', order: 'descending' }"
+          >
+            <!--     折叠子面板      -->
             <el-table-column type="expand">
               <template #default="props">
                 <transition
@@ -46,54 +52,133 @@
                     enter-active-class="animate__fadeIn"
                     leave-active-class="animate__bounceOut">
                   <el-container>
-                    <el-aside>
-                      <el-card :body-style="{ padding: '0px' }">
-                        <img
-                            src="https://img.alicdn.com/imgextra/i1/2718889079/O1CN0197JYoj2GwEPkQLEcW_!!0-item_pic.jpg_430x430q90.jpg"
-                            class="image" style="width: 300px;height: 300px"
-                        />
-                        <div style="padding: 14px">
-                          <span>Yummy hamburger</span>
-                          <div class="bottom">
-                            <el-button text class="button">Operating</el-button>
+                    <el-aside width="350px">
+                      <el-card class="box-card" shadow="always" style="overflow: clip">
+                        <div class="hvr-box-shadow-outset">
+                          <img
+                              src="https://img.alicdn.com/imgextra/i1/2718889079/O1CN0197JYoj2GwEPkQLEcW_!!0-item_pic.jpg_430x430q90.jpg"
+                              class="image" style=" width: 300px;height: 300px;"
+                              alt="error"
+                          />
+                          <div style="padding: 14px">
+                            <h4>{{ props.row.bookName }}</h4>
+                            <el-icon>
+                              <CollectionTag/>
+                            </el-icon>
+                            press by: {{ props.row.press }}
+                            <el-button text class="button hvr-bounce-to-right" type="primary">详情页</el-button>
                           </div>
                         </div>
                       </el-card>
-                      <div>
-                        <p>书号: {{ props.row.bookId }}</p>
-                        <p>书名: {{ props.row.bookName }}</p>
-                        <p>价格: {{ props.row.bookPrice }}</p>
-                        <p>库存: {{ props.row.bookNum }}</p>
-                        <p>出版社: {{ props.row.press }}</p>
-                        <p>借阅数: {{ props.row.borrowNumber }}</p>
-                      </div>
                     </el-aside>
                     <el-main>
-                      <h4>图书简介</h4>
-                      <span>
+                      <div class="hvr-backward">
+                        <h4><span style="color: cornflowerblue">
+                        图书简介
+                      </span></h4>
+                        <span>
                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid culpa dolore earum esse et eum
                       expedita, fugit iste laudantium libero molestias optio reiciendis veniam voluptate! Eos ex
                       provident saepe?Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad cum id modi, molestiae nostrum rerum soluta. Corporis, dicta eveniet fugiat magnam maxime minima nam nesciunt porro, quas reprehenderit ullam!
                       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolores eius enim est, excepturi exercitationem explicabo illo inventore ipsa labore laboriosam magnam neque quas qui, quisquam reiciendis repellat similique voluptas.
                       lorem  Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid culpa dolore earum esse et eum
-                      expedita, fugit iste laudantium libero molestias optio reiciendis veniam voluptate! Eos ex
-                      provident saepe?Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad cum id modi, molestiae nostrum rerum soluta. Corporis, dicta eveniet fugiat magnam maxime minima nam nesciunt porro, quas reprehenderit ullam!
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolores eius enim est, excepturi exercitationem explicabo illo inventore ipsa labore laboriosam magnam neque quas qui, quisquam reiciendis repellat similique voluptas.
                       lorem
                       </span>
+                      </div>
+                      <div style="height: 300px">
+                        <el-row :gutter="20">
+                          <el-col :span="9">
+                            <el-row :gutter="20">
+                              <div class="hvr-grow-shadow">
+                                <el-col :span="24">
+                                  <h4><span style="color: #1575d7"> Tags</span></h4>
+                                  <el-card shadow="always">
+                                    <el-tag
+                                        class="mx-1"
+                                        closable
+                                        :disable-transitions="false"
+                                    >
+                                      {{ "传统" }}
+                                    </el-tag>
+                                    <el-tag
+                                        class="mx-1"
+                                        closable
+                                        :disable-transitions="false"
+                                    >
+                                      {{ "大多数选择" }}
+                                    </el-tag>
+                                    <el-tag
+                                        class="mx-1"
+                                        closable
+                                        :disable-transitions="false"
+                                    >
+                                      {{ "小说" }}
+                                    </el-tag>
+                                  </el-card>
+                                </el-col>
+                              </div>
+                            </el-row>
+                            <hr>
+                            <el-row :gutter="20">
+                              <el-col :span="24">
+                                <div class="hvr-grow-shadow" style="width: 263px">
+                                  <span style="color: #fd7f00"><h4> 打个分吧!</h4></span>
+                                  <el-card shadow="always">
+                                    <el-popover
+                                        placement="top-start"
+                                        title="感谢你的反馈！"
+                                        :width="200"
+                                        trigger="click"
+                                        content="或许你还可以留下你的评论！"
+                                    >
+                                      <template #reference>
+                                        <el-rate v-model="score" :colors="scoreColors"/>
+                                      </template>
+                                    </el-popover>
 
+                                  </el-card>
+                                </div>
+                              </el-col>
+                            </el-row>
+                          </el-col>
+                          <el-col :span="15">
+                            <div class="hvr-grow-shadow" style="height: 250px">
+                              <h4><span style="color: #cc0058">Commands</span></h4>
+                              <el-card shadow="always">
+                                <el-table :data="comments" style="width: 100%">
+                                  <el-table-column label="用户" width="180">
+                                    <template #default="scope">
+                                      <div style="display: flex; align-items: center">
+                                        <el-icon>
+                                          <ChatLineRound/>
+                                        </el-icon>
+                                        <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                                      </div>
+                                    </template>
+                                  </el-table-column>
+                                  <el-table-column label="Comments" width="180">
+                                    <template #default="scope">
+                                      <div>{{ scope.row.comment }}</div>
+                                    </template>
+                                  </el-table-column>
+                                </el-table>
+                              </el-card>
+                            </div>
+                          </el-col>
+                        </el-row>
+                      </div>
                     </el-main>
                   </el-container>
                 </transition>
               </template>
             </el-table-column>
 
-            <el-table-column label="书号" prop="bookId"/>
-            <el-table-column label="书名" prop="bookName"/>
-            <el-table-column label="价格" prop="bookPrice"/>
-            <el-table-column label="库存" prop="bookNumber"/>
-            <el-table-column label="出版社" prop="press"/>
-            <el-table-column label="借阅数" prop="borrowNumber"/>
+            <el-table-column label="书号" prop="bookId" sortable/>
+            <el-table-column label="书名" prop="bookName" sortable/>
+            <el-table-column label="价格" prop="bookPrice" sortable/>
+            <el-table-column label="库存" prop="bookNumber" sortable/>
+            <el-table-column label="出版社" prop="press" sortable/>
+            <el-table-column label="借阅数" prop="borrowNumber" sortable/>
             <el-table-column fixed="right" label="Operations" width="120">
               <template #default>
                 <el-button link type="primary" size="small"
@@ -115,9 +200,24 @@
 <script>
 export default {
   name: "BookListPage",
+  data() {
+    return {
+      score: 0,
+      scoreColors: ['#99A9BF', '#f68402', '#ff0026'],
+      count: 0
+    }
+  },
   computed: {
     bookList() {
       return this.$store.state.bookList
+    },
+    comments() {
+      return this.$store.state.comments
+    }
+  },
+  methods: {
+    loadComments() {
+      this.count += 2
     }
   }
 
@@ -125,5 +225,24 @@ export default {
 </script>
 
 <style scoped>
+infinite-list {
+  height: 300px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
 
+.infinite-list .infinite-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  background: var(--el-color-primary-light-9);
+  margin: 10px;
+  color: var(--el-color-primary);
+}
+
+.infinite-list .infinite-list-item + .list-item {
+  margin-top: 10px;
+}
 </style>
