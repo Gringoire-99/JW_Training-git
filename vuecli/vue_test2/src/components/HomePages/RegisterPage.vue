@@ -53,7 +53,6 @@
                 <el-popconfirm
                     confirm-button-text="确定"
                     cancel-button-text="取消"
-                    :icon="InfoFilled"
                     icon-color="#626AEF"
                     title="确认你的输入无误？"
                     @confirm="submit"

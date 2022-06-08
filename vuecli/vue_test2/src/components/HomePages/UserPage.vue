@@ -49,7 +49,6 @@
                   <el-popconfirm
                       confirm-button-text="是"
                       cancel-button-text="算了"
-                      :icon="InfoFilled"
                       icon-color="#626AEF"
                       title="确定要修改信息吗？"
                       @confirm="submit"
