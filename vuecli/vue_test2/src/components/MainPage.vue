@@ -59,13 +59,12 @@
               </template>
               <el-menu-item-group>
                 <template #title>管理</template>
-                <el-menu-item index="2-1" class="hvr-underline-from-center">查看图书</el-menu-item>
-                <el-menu-item index="2-2" class="hvr-underline-from-center">查看借阅记录</el-menu-item>
+                <el-menu-item index="2-1" class="hvr-underline-from-center" @click="pushBookListPage">查看图书</el-menu-item>
+                <el-menu-item index="2-2" class="hvr-underline-from-center" @click="pushBookRecordPage">查看借阅记录</el-menu-item>
               </el-menu-item-group>
               <el-sub-menu index="2-4" class="hvr-grow-shadow">
                 <template #title>用户信息<span class="fill"></span></template>
-                <el-menu-item index="2-4-1" class="hvr-underline-from-center">查看用户</el-menu-item>
-                <el-menu-item index="2-4-2" class="hvr-underline-from-center">用户管理</el-menu-item>
+                <el-menu-item index="2-4-2" class="hvr-underline-from-center" @click="pushUserManagerPage">用户管理</el-menu-item>
               </el-sub-menu>
             </el-sub-menu>
           </el-menu>
@@ -132,6 +131,24 @@ export default {
     pushTeamPage(){
       this.$router.push({
         name:'TeamPage',
+        query:{}
+      })
+    },
+    pushBookListPage(){
+      this.$router.push({
+        name:'BookListPage',
+        query:{}
+      })
+    },
+    pushBookRecordPage(){
+      this.$router.push({
+        name:'BookRecordPage',
+        query:{}
+      })
+    },
+    pushUserManagerPage(){
+      this.$router.push({
+        name:'UserManagerPage',
         query:{}
       })
     },

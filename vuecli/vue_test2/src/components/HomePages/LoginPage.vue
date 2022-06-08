@@ -142,7 +142,7 @@ export default {
         this.loginMessage = "学号或密码不能为空"
         return
       }
-      axios.get('http://localhost:8080/login', {
+      axios.get('//http://localhost:8080/login', {
         params: {
           id,
           password

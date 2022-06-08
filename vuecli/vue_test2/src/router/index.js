@@ -8,6 +8,9 @@ import ContactPage from "@/components/StaticPages/ContactPage";
 import HelpPage from "@/components/StaticPages/HelpPage";
 import JoinUsPage from "@/components/StaticPages/JoinUsPage";
 import TeamPage from "@/components/StaticPages/TeamPage";
+import BookListPage from "@/components/BookPages/BookListPage";
+import BookRecordPage from "@/components/BookPages/BookRecordPage";
+import UserManagerPage from "@/components/BookPages/UserManagerPage";
 
 const routes = [
 
@@ -51,6 +54,21 @@ const routes = [
         name: 'TeamPage',
         path: '/TeamPage',
         component: TeamPage
+    },
+    {
+        name: 'BookListPage',
+        path: '/BookListPage',
+        component: BookListPage
+    },
+    {
+        name: 'BookRecordPage',
+        path: '/BookRecordPage',
+        component:BookRecordPage
+    },
+    {
+        name: 'UserManagerPage',
+        path: '/UserManagerPage',
+        component: UserManagerPage
     },
 ]
 export default createRouter({
