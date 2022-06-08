@@ -17,7 +17,7 @@
               <el-menu-item-group>
                 <template #title>账号
                 </template>
-                <el-menu-item index="1-2" class="hvr-underline-from-center hvr-grow-shadow" @click="pushUserPage">我的</el-menu-item>
+                <el-menu-item index="1-2" class="hvr-underline-from-center hvr-grow-shadow" @click="pushUserPage">我的[未登录]</el-menu-item>
                 <el-menu-item index="1-3" class="hvr-underline-from-center hvr-grow-shadow" @click="pushLoginPage">登录</el-menu-item>
                 <el-menu-item index="1-4" class="hvr-underline-from-center hvr-grow-shadow" @click="pushRegisterPage">注册</el-menu-item>
               </el-menu-item-group>

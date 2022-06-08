@@ -13,7 +13,7 @@
           <div class="hvr-border-fade">
             <el-main>
               <el-form :model="form" label-width="120px">
-                <el-form-item label="用户姓名">
+                <el-form-item label="姓名">
                   <el-input v-model="form.name"/>
                 </el-form-item>
                 <el-form-item label="性别">
@@ -46,15 +46,33 @@
                   <el-input v-model="form.desc" type="textarea"/>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="onSubmit">保存</el-button>
+                  <el-popconfirm
+                      confirm-button-text="是"
+                      cancel-button-text="算了"
+                      :icon="InfoFilled"
+                      icon-color="#626AEF"
+                      title="确定要修改信息吗？"
+                      @confirm="submit"
+                  >
+                    <template #reference>
+                      <el-button type="primary">保存</el-button>
+
+                    </template>
+                  </el-popconfirm>
                   <el-button>取消</el-button>
                 </el-form-item>
               </el-form>
             </el-main>
-            <el-footer >
-              <el-icon class="hvr-grow-shadow "><Reading /></el-icon>
-              <el-icon class="hvr-grow-shadow"><Bell /></el-icon>
-              <el-icon class="hvr-grow-shadow" ><Star /></el-icon>
+            <el-footer>
+              <el-icon class="hvr-grow-shadow ">
+                <Reading/>
+              </el-icon>
+              <el-icon class="hvr-grow-shadow">
+                <Bell/>
+              </el-icon>
+              <el-icon class="hvr-grow-shadow">
+                <Star/>
+              </el-icon>
             </el-footer>
           </div>
           <hr>
@@ -68,10 +86,33 @@
               <el-collapse>
                 <el-collapse-item title="正在读" name="1">
                   <div>
-                    ！BOOKLIST！
-                  </div>
-                  <div>
-                    ！BOOKLIST！
+                    <el-descriptions :column="3" border>
+                      <el-descriptions-item
+                          label="书名"
+                          label-align="right"
+                          align="center"
+                          label-class-name="my-label"
+                          class-name="my-content"
+                          width="150px"
+                      >{{ "西游记" }}
+                      </el-descriptions-item
+                      >
+                      <el-descriptions-item label="图书编号" label-align="right" align="center"
+                      >{{ "205486490000" }}
+                      </el-descriptions-item
+                      >
+                      <el-descriptions-item label="作者" label-align="right" align="center"
+                      >{{ "吴承恩" }}
+                      </el-descriptions-item
+                      >
+                      <el-descriptions-item label="还书时间" label-align="right" align="center">
+                        <el-tag size="small">{{ "2022-6-12" }}</el-tag>
+                      </el-descriptions-item>
+                      <el-descriptions-item label="描述" label-align="right" align="center"
+                      >{{ "全书主要描写了孙悟空出世及大闹天宫后，遇见了唐僧、猪八戒、沙僧和白龙马，西行取经，一路上 ...".substring(0, 10) + "..." }}
+                      </el-descriptions-item
+                      >
+                    </el-descriptions>
                   </div>
                 </el-collapse-item>
                 <el-collapse-item title="收藏图书" name="2">
@@ -86,11 +127,11 @@
                   <div>
                     <el-timeline>
                       <el-timeline-item
-                          v-for="(activity, index) in activities"
+                          v-for="(activity, index) in bookRecord"
                           :key="index"
-                          :timestamp="activity.timestamp"
+                          :timestamp="activity.returnDate"
                       >
-                        {{ activity.content }}
+                        {{ activity.bookName }}
                       </el-timeline-item>
                     </el-timeline>
                   </div>
@@ -130,37 +171,81 @@
 
 
 </template>
+<script>
+import {ElNotification} from 'element-plus'
 
-<script lang="ts" setup>
-import {reactive} from 'vue'
-// do not use same name with ref
-const form = reactive({
-  name: '',
-  region: '',
-  date1: '',
-  date2: '',
-  delivery: false,
-  type: [],
-  resource: '',
-  desc: '',
-})
-const activities = [
-  {
-    content: '书xxx',
-    timestamp: '2022-04-15',
+export default {
+  data() {
+    return {
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        desc: '',
+      },
+      bookRecord: [
+        {bookName: '书1', returnDate: "2022-04-15"},
+        {bookName: '书2', returnDate: "2022-05-15"},
+        {bookName: '书2', returnDate: "2022-06-15"},
+      ],
+      userInfo: {
+        userId: '',
+        userName: '',
+        userRole: '',
+      },
+
+    }
   },
-  {
-    content: '书xxx',
-    timestamp: '2018-04-13',
+  methods: {
+    submit() {
+      this.successPopUp('应用中...','修改成功')
+    },
+    warningPopUp(message,title) {
+      ElNotification({
+        title ,
+        message,
+        type: 'warning',
+      })
+    },
+    successPopUp(message,title) {
+      ElNotification({
+        title ,
+        message,
+        type: 'success',
+      })
+    }
   },
-  {
-    content: '书xxx',
-    timestamp: '2010-04-11',
-  },
-]
-const onSubmit = () => {
-  console.log('submit!')
+  mounted() {
+    //添加登录判断
+    this.warningPopUp("您还未登录",'无法访问服务')
+    //this.successPopUp('您已成功登录','欢迎，用户' + this.userInfo.userName)
+  }
 }
-
 </script>
+<!--<script lang="ts" setup>-->
+<!--import {reactive} from 'vue'-->
+<!--// do not use same name with ref-->
+<!--const form = reactive({-->
+
+<!--})-->
+<!--const activities = [-->
+<!--  {-->
+<!--    content: '书xxx',-->
+<!--    timestamp: '2022-04-15',-->
+<!--  },-->
+<!--  {-->
+<!--    content: '书xxx',-->
+<!--    timestamp: '2018-04-13',-->
+<!--  },-->
+<!--  {-->
+<!--    content: '书xxx',-->
+<!--    timestamp: '2010-04-11',-->
+<!--  },-->
+<!--]-->
+<!--const onSubmit = () => {-->
+<!--  console.log('submit!')-->
+<!--}-->
+
+<!--</script>-->
 style>

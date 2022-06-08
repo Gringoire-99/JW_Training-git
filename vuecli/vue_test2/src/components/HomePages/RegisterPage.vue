@@ -50,12 +50,25 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="submit">提交</el-button>
+                <el-popconfirm
+                    confirm-button-text="确定"
+                    cancel-button-text="取消"
+                    :icon="InfoFilled"
+                    icon-color="#626AEF"
+                    title="确认你的输入无误？"
+                    @confirm="submit"
+                >
+                  <template #reference>
+                    <el-button type="primary">提交</el-button>
+                  </template>
+                </el-popconfirm>
+
                 <el-button>取消</el-button>
               </el-form-item>
             </el-form>
             <p></p>
-
+            <el-progress :percentage="progress" :indeterminate="true" v-show="showProgress" :status="status"
+                         :duration="1.5"/>
             <el-alert v-show="registerSuccessStatus" @close="registerSuccessStatus=false"
                       title="注册成功"
                       type="success"
@@ -104,6 +117,7 @@
 
 <script>
 import axios from "axios";
+
 export default {
   name: "RegisterPage",
   data() {
@@ -116,20 +130,31 @@ export default {
       },
       registerSuccessStatus: false,
       registerFailStatus: false,
-      registerMessage: ''
+      registerMessage: '',
+
+      showProgress: false,
+      progress: 0,
+      status: '',
+      progressStatus: {'success': "success", "exception": "exception"}
     }
   },
   methods: {
     submit() {
+      let timer;
       let id = this.form.id;
       let name = this.form.name;
       let pwd = this.form.password;
       let role = this.form.role;
-      if (id.length===0||name.length===0||pwd.length===0||role.length===0){
+      if (id.length === 0 || name.length === 0 || pwd.length === 0 || role.length === 0) {
         this.registerSuccessStatus = false;
         this.registerFailStatus = true;
         this.registerMessage = "有空选项"
+        return
       }
+      this.showProgress = true
+      timer = setInterval(() => {
+        this.progress += 20
+      }, 1500)
       axios.get('http://localhost:8080/register', {
         params: {
           id,
@@ -138,13 +163,31 @@ export default {
           role
         }
       }).then(response => {
-        this.registerSuccessStatus = true
-        this.registerFailStatus = false
+        this.status = this.progressStatus['success']
         this.registerMessage = "成功状态" + response.status
+        setTimeout(() => {
+          clearInterval(timer)
+          this.progress = 0
+          this.registerSuccessStatus = true
+          this.registerFailStatus = false
+          window.setTimeout(() => {
+            this.showProgress = false
+            this.status = ''
+          }, 3000)
+        }, 2000)
       }).catch(() => {
-        this.registerFailStatus = true
-        this.registerSuccessStatus = false
-
+        this.registerMessage = '网络请求失败'
+        this.status = this.progressStatus['exception']
+        setTimeout(() => {
+          clearInterval(timer)
+          this.progress = 0
+          this.registerFailStatus = true
+          this.registerSuccessStatus = false
+          window.setTimeout(() => {
+            this.showProgress = false
+            this.status = ''
+          }, 3000)
+        }, 2000)
       })
 
     }
