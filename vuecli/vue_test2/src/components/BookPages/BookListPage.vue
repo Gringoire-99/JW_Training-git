@@ -191,7 +191,7 @@
             <el-table-column label="借阅数" prop="borrowNumber" sortable/>
             <el-table-column fixed="right" label="操作" width="120">
               <template #default="scope">
-                <el-button link type="primary"  @click="handleEdit(scope.$index, scope.row)"
+                <el-button link type="primary" @click="handleModify(scope.$index, scope.row);openModify()"
                 >修改
                 </el-button
                 >
@@ -285,6 +285,65 @@
 
             </el-descriptions>
           </el-drawer>
+          <el-drawer
+              v-model="isOpenModify"
+              direction="rtl"
+              size="35%"
+          >
+            <el-card class="box-card">
+              <template #header>
+                <div class="card-header">
+                  <h4>修改数据</h4>
+                </div>
+                <p></p>
+                <el-descriptions
+                    class="margin-top"
+                    title="旧数据"
+                    :column="3"
+                    border
+                >
+                  <el-descriptions-item v-for="(prop,index) in modify" :key='index'>
+                    <template #label>
+                      <div class="cell-item">
+                        {{ prop.name }}
+                      </div>
+                    </template>
+                    {{ prop.oldVal }}
+                  </el-descriptions-item>
+                </el-descriptions>
+                <p></p>
+                <el-descriptions
+                    class="margin-top"
+                    title="新数据"
+                    :column="3"
+                    border
+                >
+                  <el-descriptions-item v-for="(prop,index) in modify" :key='index'>
+                    <template #label>
+                      <div class="cell-item">
+                        {{ prop.name }}
+                      </div>
+                    </template>
+                    <el-input v-model="prop.newVal"></el-input>
+                  </el-descriptions-item>
+                </el-descriptions>
+              </template>
+              <div class="bottom">
+                <el-popconfirm
+                    confirm-button-text="是"
+                    cancel-button-text="算了"
+                    icon-color="#626AEF"
+                    title="确定要修改信息吗？"
+                    @confirm="submit"
+                >
+                  <template #reference>
+                    <el-button type="primary">保存</el-button>
+                  </template>
+                </el-popconfirm>
+                <el-button>取消</el-button>
+              </div>
+            </el-card>
+          </el-drawer>
         </el-main>
       </el-container>
 
@@ -295,6 +354,7 @@
 <script>
 import {Search} from '@element-plus/icons-vue'
 import {ElNotification} from 'element-plus'
+
 let propMap = new Map()
 propMap.set("书名", "bookName")
 propMap.set("书号", "bookId")
@@ -312,6 +372,8 @@ export default {
       count: 0,
       isOpenFilter: false,
       isOpenSearch: false,
+      isOpenModify: false,
+
 
       filters: {
         price: {
@@ -345,41 +407,41 @@ export default {
       keyWord: '',
       keyProp: '书名',
 
-      modify:{
-        price: {
+      modify: {
+        bookPrice: {
           name: '价格',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
         bookNumber: {
           name: '库存',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
         bookId: {
           name: '书号',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
         bookName: {
           name: '书名',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
         bookAuthor: {
           name: '作者',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
         press: {
           name: '出版社',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
         borrowNumber: {
           name: '借阅数',
-          oldVal:'',
-          newVal:'',
+          oldVal: '',
+          newVal: '',
         },
       }
     }
@@ -408,6 +470,9 @@ export default {
     openSearch() {
       this.isOpenSearch = true
     },
+    openModify() {
+      this.isOpenModify = true
+    },
     closeSearch() {
       this.isOpenSearch = false
     },
@@ -430,22 +495,32 @@ export default {
         },
       }
     },
-    warningPopUp(message,title) {
+    warningPopUp(message, title) {
       ElNotification({
-        title ,
+        title,
         message,
         type: 'warning',
       })
     },
-    successPopUp(message,title) {
+    successPopUp(message, title) {
       ElNotification({
-        title ,
+        title,
         message,
         type: 'success',
       })
     },
-    handleEdit(index, row){
+    handleModify(index, row) {
       console.log(index, row)
+      this.modify.bookId.oldVal = this.modify.bookId.newVal = row.bookId
+      this.modify.bookName.oldVal = this.modify.bookName.newVal = row.bookName
+      this.modify.bookAuthor.oldVal = this.modify.bookAuthor.newVal = row.bookAuthor
+      this.modify.bookPrice.oldVal = this.modify.bookPrice.newVal = row.bookPrice
+      this.modify.press.oldVal = this.modify.press.newVal = row.press
+      this.modify.bookNumber.oldVal = this.modify.bookNumber.newVal = row.bookNumber
+      this.modify.borrowNumber.oldVal = this.modify.borrowNumber.newVal = row.borrowNumber
+    },
+    submit(){
+      alert("提交成功")
     }
   }, mounted() {
     this.Search = Search
