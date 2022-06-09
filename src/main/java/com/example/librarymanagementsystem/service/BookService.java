@@ -9,11 +9,11 @@ public interface BookService {
      */
     void addBook(Book book);
 
-    void deleteBook(int id);
+    void deleteBook(Long id);
 
     void updateBook(Book book);
 
-    Book getBookById(int id);
+    Book getBookById(Long id);
 
     Book getUserByWrapper(QueryWrapper<Book> wrapper);
 }

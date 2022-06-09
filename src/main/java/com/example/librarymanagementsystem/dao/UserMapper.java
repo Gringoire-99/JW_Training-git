@@ -5,7 +5,7 @@ import com.example.librarymanagementsystem.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
 @Mapper
+@Repository
 public interface UserMapper extends BaseMapper<User> {
 }

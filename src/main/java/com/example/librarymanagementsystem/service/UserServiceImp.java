@@ -1,16 +1,21 @@
 package com.example.librarymanagementsystem.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.librarymanagementsystem.dao.UserMapper;
 import com.example.librarymanagementsystem.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImp implements UserService {
+    @Autowired
+    UserMapper userMapper;
 
-
-    public User getUserById(int id) {
-
-        return null;
+    public User getUser(Long id, String password) {
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        qw.eq("user_id", id);
+        qw.eq("user_password", password);
+        return userMapper.selectOne(qw);
     }
 
     @Override
@@ -24,7 +29,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void deleteUser(int id) {
+    public void deleteUser(Long id) {
 
     }
 

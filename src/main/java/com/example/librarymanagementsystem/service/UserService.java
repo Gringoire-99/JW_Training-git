@@ -8,13 +8,13 @@ public interface UserService {
      * 增删改查
      */
 
-    User getUserById(int id);
+    User getUser(Long id, String password);
 
     void addUser(User user);
 
     void updateUser(User user);
 
-    void deleteUser(int id);
+    void deleteUser(Long id);
 
     User getUserByWrapper(QueryWrapper<User> wrapper);
 }

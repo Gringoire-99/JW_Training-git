@@ -3,7 +3,7 @@ package com.example.librarymanagementsystem.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.model.Book;
 
-public class BookServiceImp implements BookService{
+public class BookServiceImp implements BookService {
 
     @Override
     public void addBook(Book book) {
@@ -11,7 +11,7 @@ public class BookServiceImp implements BookService{
     }
 
     @Override
-    public void deleteBook(int id) {
+    public void deleteBook(Long id) {
 
     }
 
@@ -21,7 +21,7 @@ public class BookServiceImp implements BookService{
     }
 
     @Override
-    public Book getBookById(int id) {
+    public Book getBookById(Long id) {
         return null;
     }
 

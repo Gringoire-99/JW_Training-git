@@ -5,7 +5,7 @@ import com.example.librarymanagementsystem.model.BorrowRecord;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
 @Mapper
-public interface BookRecordMapper extends BaseMapper<BorrowRecord> {
+@Repository
+public interface BorrowRecordMapper extends BaseMapper<BorrowRecord> {
 }
