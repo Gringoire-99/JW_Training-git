@@ -4,23 +4,9 @@
       name="animate__animated "
       enter-active-class="animate__fadeInLeft"
       leave-active-class="animate__bounceOut">
-    <div @click.stop="closeSearch">
+    <div>
       <el-container>
         <el-header>
-          <!--          <el-row>-->
-          <!--            <el-col :span="20">-->
-          <!--              <div style="width: 100%;height: 60px;background-color: #545c64;color: azure">-->
-          <!--                <el-button-group>-->
-          <!--                  <el-button class="mButton hvr-grow-shadow">筛选</el-button>-->
-          <!--                  <el-button class="mButton">搜索</el-button>-->
-          <!--                  <el-button class="mButton">添加</el-button>-->
-          <!--                </el-button-group>-->
-          <!--              </div>-->
-
-          <!--            </el-col>-->
-          <!--            <el-col :span="4"></el-col>-->
-          <!--          </el-row>-->
-
           <div class="h-6"/>
           <el-menu
               class="el-menu-demo"
@@ -31,8 +17,8 @@
           >
             <el-menu-item index="1" @click="openFilter">筛选</el-menu-item>
             <el-menu-item index="2" @mouseenter="openSearch">搜索</el-menu-item>
-            <el-menu-item index="3" @click="reset">重置</el-menu-item>
-            <el-menu-item index="4">Orders</el-menu-item>
+            <el-menu-item index="3" @click="reset();successPopUp('已重置筛选项！','重置')">重置</el-menu-item>
+            <el-menu-item index="4">添加</el-menu-item>
           </el-menu>
 
         </el-header>
@@ -43,19 +29,20 @@
               enter-active-class="animate__bounceIn"
               leave-active-class="animate__bounceOut"
           >
-            <div v-show="isOpenSearch" style="width: 500px;display: flex" >
-                <el-input
-                    placeholder="Please Input"
-                    :prefix-icon="Search"
-                ></el-input>
-                <el-select class="m-2" placeholder="Select" size="large" >
-                  <el-option
-                      v-for="(prop,index) in filters"
-                      :key="index"
-                      :label="prop.name"
-                      :value="prop.name"
-                  />
-                </el-select>
+            <div v-show="isOpenSearch" style="width: 500px;display: flex">
+              <el-input
+                  placeholder="请输入查找关键词"
+                  :prefix-icon="Search"
+                  v-model="keyWord"
+              ></el-input>
+              <el-select class="m-2" placeholder="Select" size="large" v-model="keyProp">
+                <el-option
+                    v-for="(prop,index) in filters"
+                    :key="index"
+                    :label="prop.name"
+                    :value="prop.name"
+                />
+              </el-select>
 
             </div>
           </transition>
@@ -202,13 +189,12 @@
             <el-table-column label="库存" prop="bookNumber" sortable/>
             <el-table-column label="出版社" prop="press" sortable/>
             <el-table-column label="借阅数" prop="borrowNumber" sortable/>
-            <el-table-column fixed="right" label="Operations" width="120">
-              <template #default>
-                <el-button link type="primary" size="small"
-                >Detail
+            <el-table-column fixed="right" label="操作" width="120">
+              <template #default="scope">
+                <el-button link type="primary"  @click="handleEdit(scope.$index, scope.row)"
+                >修改
                 </el-button
                 >
-                <el-button link type="primary" size="small">Edit</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -308,7 +294,15 @@
 
 <script>
 import {Search} from '@element-plus/icons-vue'
-
+import {ElNotification} from 'element-plus'
+let propMap = new Map()
+propMap.set("书名", "bookName")
+propMap.set("书号", "bookId")
+propMap.set("作者", "bookAuthor")
+propMap.set("出版社", "press")
+propMap.set("库存", "bookNumber")
+propMap.set("借阅数", "borrowNumber")
+propMap.set("价格", "bookPrice")
 export default {
   name: "BookListPage",
   data() {
@@ -330,31 +324,81 @@ export default {
           lowest: 0,
           highest: Number.MAX_VALUE,
         },
+        bookId: {
+          name: '书号',
+        },
+        bookName: {
+          name: '书名',
+        },
+        bookAuthor: {
+          name: '作者',
+        },
+        press: {
+          name: '出版社',
+        },
         borrowNumber: {
           name: '借阅数',
           lowest: 0,
           highest: Number.MAX_VALUE,
         },
       },
-      Search
+      keyWord: '',
+      keyProp: '书名',
 
+      modify:{
+        price: {
+          name: '价格',
+          oldVal:'',
+          newVal:'',
+        },
+        bookNumber: {
+          name: '库存',
+          oldVal:'',
+          newVal:'',
+        },
+        bookId: {
+          name: '书号',
+          oldVal:'',
+          newVal:'',
+        },
+        bookName: {
+          name: '书名',
+          oldVal:'',
+          newVal:'',
+        },
+        bookAuthor: {
+          name: '作者',
+          oldVal:'',
+          newVal:'',
+        },
+        press: {
+          name: '出版社',
+          oldVal:'',
+          newVal:'',
+        },
+        borrowNumber: {
+          name: '借阅数',
+          oldVal:'',
+          newVal:'',
+        },
+      }
     }
   },
   computed: {
-    bookList() {
-      return this.$store.state.bookList
-    },
     comments() {
       return this.$store.state.comments
     },
     filterList() {
-      let data = this.$store.state.bookList.filter((book) => {
+      let bookList = this.$store.state.bookList
+      let keyProp = propMap.get(this.keyProp)
+      let keyWord = this.keyWord
+      let fl = bookList.filter((book) => {
         return book.bookPrice >= this.filters.price.lowest && book.bookPrice <= this.filters.price.highest
             && book.bookNumber >= this.filters.bookNumber.lowest && book.bookNumber <= this.filters.bookNumber.highest
             && book.borrowNumber >= this.filters.borrowNumber.lowest && book.borrowNumber <= this.filters.borrowNumber.highest
       });
-
-      return data;
+      fl = fl.filter((book) => ("" + book[keyProp]).indexOf(keyWord) !== -1)
+      return fl;
     }
   },
   methods: {
@@ -385,9 +429,26 @@ export default {
           highest: Number.MAX_VALUE,
         },
       }
+    },
+    warningPopUp(message,title) {
+      ElNotification({
+        title ,
+        message,
+        type: 'warning',
+      })
+    },
+    successPopUp(message,title) {
+      ElNotification({
+        title ,
+        message,
+        type: 'success',
+      })
+    },
+    handleEdit(index, row){
+      console.log(index, row)
     }
-
-
+  }, mounted() {
+    this.Search = Search
   }
 
 }
