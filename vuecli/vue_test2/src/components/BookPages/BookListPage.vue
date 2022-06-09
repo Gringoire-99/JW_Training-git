@@ -4,9 +4,24 @@
       name="animate__animated "
       enter-active-class="animate__fadeInLeft"
       leave-active-class="animate__bounceOut">
-    <div>
+    <div @click.stop="closeSearch">
       <el-container>
         <el-header>
+          <!--          <el-row>-->
+          <!--            <el-col :span="20">-->
+          <!--              <div style="width: 100%;height: 60px;background-color: #545c64;color: azure">-->
+          <!--                <el-button-group>-->
+          <!--                  <el-button class="mButton hvr-grow-shadow">筛选</el-button>-->
+          <!--                  <el-button class="mButton">搜索</el-button>-->
+          <!--                  <el-button class="mButton">添加</el-button>-->
+          <!--                </el-button-group>-->
+          <!--              </div>-->
+
+          <!--            </el-col>-->
+          <!--            <el-col :span="4"></el-col>-->
+          <!--          </el-row>-->
+
+          <div class="h-6"/>
           <el-menu
               class="el-menu-demo"
               mode="horizontal"
@@ -14,29 +29,37 @@
               text-color="#fff"
               active-text-color="#ffd04b"
           >
-
-            <el-menu-item index="1">Processing Center</el-menu-item>
-            <el-sub-menu index="2">
-              <template #title>Workspace</template>
-              <el-menu-item index="2-1">item one</el-menu-item>
-              <el-menu-item index="2-2">item two</el-menu-item>
-              <el-menu-item index="2-3">item three</el-menu-item>
-              <el-sub-menu index="2-4">
-                <template #title>item four</template>
-                <el-menu-item index="2-4-1">item one</el-menu-item>
-                <el-menu-item index="2-4-2">item two</el-menu-item>
-                <el-menu-item index="2-4-3">item three</el-menu-item>
-              </el-sub-menu>
-            </el-sub-menu>
-            <el-menu-item index="3" disabled>Info</el-menu-item>
+            <el-menu-item index="1" @click="openFilter">筛选</el-menu-item>
+            <el-menu-item index="2" @mouseenter="openSearch">搜索</el-menu-item>
+            <el-menu-item index="3" @click="reset">重置</el-menu-item>
             <el-menu-item index="4">Orders</el-menu-item>
-
           </el-menu>
 
         </el-header>
         <el-main>
+          <transition
+              appear
+              name="animate__animated"
+              enter-active-class="animate__bounceIn"
+              leave-active-class="animate__bounceOut"
+          >
+            <div v-show="isOpenSearch" style="width: 500px;display: flex" >
+                <el-input
+                    placeholder="Please Input"
+                    :prefix-icon="Search"
+                ></el-input>
+                <el-select class="m-2" placeholder="Select" size="large" >
+                  <el-option
+                      v-for="(prop,index) in filters"
+                      :key="index"
+                      :label="prop.name"
+                      :value="prop.name"
+                  />
+                </el-select>
 
-          <el-table :data="bookList" style="width: 100%"
+            </div>
+          </transition>
+          <el-table :data="filterList" style="width: 100%"
                     :stripe="true"
                     :border="true"
                     height="700"
@@ -189,7 +212,93 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-drawer
+              v-model="isOpenFilter"
+              title="筛选书籍"
+              direction="rtl"
+              size="35%"
+          >
+            <el-descriptions
+                class="margin-top"
+                title="筛选"
+                :column="3"
+                border
+            >
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    属性名
+                  </div>
+                </template>
+                {{ filters.price.name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    最小
+                  </div>
+                </template>
+                <el-input v-model="filters.price.lowest" type="number"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    最大
+                  </div>
+                </template>
+                <el-input v-model="filters.price.highest" type="number"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    属性名
+                  </div>
+                </template>
+                {{ filters.borrowNumber.name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    最小
+                  </div>
+                </template>
+                <el-input v-model="filters.borrowNumber.lowest" type="number"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    最大
+                  </div>
+                </template>
+                <el-input v-model="filters.borrowNumber.highest" type="number"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    属性名
+                  </div>
+                </template>
+                {{ filters.bookNumber.name }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    最小
+                  </div>
+                </template>
+                <el-input v-model="filters.bookNumber.lowest" type="number"></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="cell-item">
+                    最大
+                  </div>
+                </template>
+                <el-input v-model="filters.bookNumber.highest" type="number"></el-input>
+              </el-descriptions-item>
 
+            </el-descriptions>
+          </el-drawer>
         </el-main>
       </el-container>
 
@@ -198,13 +307,37 @@
 </template>
 
 <script>
+import {Search} from '@element-plus/icons-vue'
+
 export default {
   name: "BookListPage",
   data() {
     return {
       score: 0,
       scoreColors: ['#99A9BF', '#f68402', '#ff0026'],
-      count: 0
+      count: 0,
+      isOpenFilter: false,
+      isOpenSearch: false,
+
+      filters: {
+        price: {
+          name: '价格',
+          lowest: 0,
+          highest: Number.MAX_VALUE,
+        },
+        bookNumber: {
+          name: '库存',
+          lowest: 0,
+          highest: Number.MAX_VALUE,
+        },
+        borrowNumber: {
+          name: '借阅数',
+          lowest: 0,
+          highest: Number.MAX_VALUE,
+        },
+      },
+      Search
+
     }
   },
   computed: {
@@ -213,36 +346,60 @@ export default {
     },
     comments() {
       return this.$store.state.comments
+    },
+    filterList() {
+      let data = this.$store.state.bookList.filter((book) => {
+        return book.bookPrice >= this.filters.price.lowest && book.bookPrice <= this.filters.price.highest
+            && book.bookNumber >= this.filters.bookNumber.lowest && book.bookNumber <= this.filters.bookNumber.highest
+            && book.borrowNumber >= this.filters.borrowNumber.lowest && book.borrowNumber <= this.filters.borrowNumber.highest
+      });
+
+      return data;
     }
   },
   methods: {
-    loadComments() {
-      this.count += 2
+    openFilter() {
+      this.isOpenFilter = true
+    },
+    openSearch() {
+      this.isOpenSearch = true
+    },
+    closeSearch() {
+      this.isOpenSearch = false
+    },
+    reset() {
+      this.filters = {
+        price: {
+          name: '价格',
+          lowest: 0,
+          highest: Number.MAX_VALUE,
+        },
+        bookNumber: {
+          name: '库存',
+          lowest: 0,
+          highest: Number.MAX_VALUE,
+        },
+        borrowNumber: {
+          name: '借阅数',
+          lowest: 0,
+          highest: Number.MAX_VALUE,
+        },
+      }
     }
+
+
   }
 
 }
 </script>
 
 <style scoped>
-infinite-list {
-  height: 300px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
+.mButton {
+  width: 100px;
+  height: 60px;
+  border-radius: 0;
+  background-color: #545c64;
+  color: #ffd04b;
 }
 
-.infinite-list .infinite-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  background: var(--el-color-primary-light-9);
-  margin: 10px;
-  color: var(--el-color-primary);
-}
-
-.infinite-list .infinite-list-item + .list-item {
-  margin-top: 10px;
-}
 </style>
