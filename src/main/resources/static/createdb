@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS library_management_system CHARACTER SET UTF8MB4;
 USE library_management_system;
 CREATE TABLE IF NOT EXISTS book
 (
-    book_id       INTEGER AUTO_INCREMENT PRIMARY KEY,
+    book_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_name     VARCHAR(30) NOT NULL,
     book_author   VARCHAR(20) DEFAULT '未知作者',
     book_price    DECIMAL     NOT NULL,
@@ -14,18 +14,24 @@ CREATE TABLE IF NOT EXISTS book
 );
 CREATE TABLE IF NOT EXISTS user
 (
-    user_id       INTEGER AUTO_INCREMENT PRIMARY KEY,
+    user_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_name     VARCHAR(100) NOT NULL,
     user_password VARCHAR(50)  NOT NULL,
-    role          VARCHAR(10) DEFAULT 'user'
+    role          VARCHAR(10) DEFAULT 'user',
+    CONSTRAINT CHECK ( role = 'user' OR role = 'admin')
 );
 CREATE TABLE IF NOT EXISTS borrow_record
 (
-    borrow_book_ID INTEGER,
-    borrow_user_ID INTEGER,
+    borrow_book_ID BIGINT,
+    borrow_user_ID BIGINT,
     borrow_date    DATE NOT NULL,
     return_date    DATE NOT NULL,
+    PRIMARY KEY (borrow_book_ID, borrow_user_ID, borrow_date),
     CONSTRAINT CHECK ( return_date > borrow_record.borrow_date ),
-    CONSTRAINT FOREIGN KEY (borrow_book_ID) REFERENCES library_management_system.book (book_id),
-    CONSTRAINT FOREIGN KEY (borrow_user_ID) REFERENCES library_management_system.user (user_id)
+    CONSTRAINT FOREIGN KEY (borrow_book_ID) REFERENCES library_management_system.book (book_id) ON UPDATE CASCADE,
+    CONSTRAINT FOREIGN KEY (borrow_user_ID) REFERENCES library_management_system.user (user_id) ON UPDATE CASCADE
 );
+INSERT INTO library_management_system.user(user_id, user_name, user_password, role)
+    VALUE (
+           202012900750, 'root', '123456', 'admin'
+    );

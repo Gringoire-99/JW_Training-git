@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Mapper
-interface BookRecordMapper extends BaseMapper<BorrowRecord> {
+public interface BookRecordMapper extends BaseMapper<BorrowRecord> {
 }

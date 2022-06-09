@@ -3,7 +3,7 @@ package com.example.librarymanagementsystem.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.model.Book;
 
-interface BookService {
+public interface BookService {
     /**
      * 实现对book的增删改查
      */

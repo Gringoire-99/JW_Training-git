@@ -2,10 +2,14 @@ package com.example.librarymanagementsystem.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.model.User;
+import org.springframework.stereotype.Service;
 
-public class UserServiceImp implements UserService{
-    @Override
+@Service
+public class UserServiceImp implements UserService {
+
+
     public User getUserById(int id) {
+
         return null;
     }
 
