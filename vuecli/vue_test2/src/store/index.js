@@ -26,7 +26,6 @@ const mutations = {
 
 }
 const state = {
-    count:0,
     bookList: [
         {bookId: '01', bookName: '西游记', bookAuthor: 'wcn', bookPrice: 52, bookNumber: 2050, borrowNumber: 650,press:'新华出版社'},
         {bookId: '02', bookName: '三国', bookAuthor: 'xxx', bookPrice: 32, bookNumber: 2000, borrowNumber: 1500,press:'新华出版社'},

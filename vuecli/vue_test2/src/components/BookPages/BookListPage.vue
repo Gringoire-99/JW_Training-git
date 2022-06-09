@@ -18,7 +18,7 @@
             <el-menu-item index="1" @click="openFilter">筛选</el-menu-item>
             <el-menu-item index="2" @mouseenter="openSearch">搜索</el-menu-item>
             <el-menu-item index="3" @click="reset();successPopUp('已重置筛选项！','重置')">重置</el-menu-item>
-            <el-menu-item index="4">添加</el-menu-item>
+            <el-menu-item index="4" @click="openAdd">添加</el-menu-item>
           </el-menu>
 
         </el-header>
@@ -185,6 +185,7 @@
 
             <el-table-column label="书号" prop="bookId" sortable/>
             <el-table-column label="书名" prop="bookName" sortable/>
+            <el-table-column label="作者" prop="bookAuthor" sortable/>
             <el-table-column label="价格" prop="bookPrice" sortable/>
             <el-table-column label="库存" prop="bookNumber" sortable/>
             <el-table-column label="出版社" prop="press" sortable/>
@@ -324,7 +325,7 @@
                         {{ prop.name }}
                       </div>
                     </template>
-                    <el-input v-model="prop.newVal"></el-input>
+                    <el-input v-model.trim="prop.newVal"></el-input>
                   </el-descriptions-item>
                 </el-descriptions>
               </template>
@@ -340,10 +341,54 @@
                     <el-button type="primary">保存</el-button>
                   </template>
                 </el-popconfirm>
-                <el-button>取消</el-button>
+                <el-button @click="closeModify">取消</el-button>
               </div>
             </el-card>
           </el-drawer>
+          <el-drawer
+              v-model="isOpenAdd"
+              direction="rtl"
+              size="35%"
+          >
+            <el-card class="box-card">
+              <template #header>
+                <div class="card-header">
+                  <h4>添加数据</h4>
+                </div>
+                <p></p>
+                <el-descriptions
+                    class="margin-top"
+                    title="新数据"
+                    :column="3"
+                    border
+                >
+                  <el-descriptions-item v-for="(prop,index) in add" :key='index'>
+                    <template #label>
+                      <div class="cell-item">
+                        {{ prop.name }}
+                      </div>
+                    </template>
+                    <el-input v-model.trim="prop.newVal"></el-input>
+                  </el-descriptions-item>
+                </el-descriptions>
+              </template>
+              <div class="bottom">
+                <el-popconfirm
+                    confirm-button-text="是"
+                    cancel-button-text="算了"
+                    icon-color="#626AEF"
+                    title="确定要添加书籍信息吗？"
+                    @confirm="submitAdd"
+                >
+                  <template #reference>
+                    <el-button type="primary">添加</el-button>
+                  </template>
+                </el-popconfirm>
+                <el-button @click="closeAdd">取消</el-button>
+              </div>
+            </el-card>
+          </el-drawer>
+
         </el-main>
       </el-container>
 
@@ -363,17 +408,29 @@ propMap.set("出版社", "press")
 propMap.set("库存", "bookNumber")
 propMap.set("借阅数", "borrowNumber")
 propMap.set("价格", "bookPrice")
+let checkData = function (data) {
+  //数值性数据验证
+  if ((!/^\d+$/.test("" + data.bookId.newVal)) || (!/^\d+$/.test("" + data.bookNumber.newVal)) || (!/^\d+$/.test("" + data.borrowNumber.newVal)) || (!/^\d+$/.test("" + data.bookPrice.newVal))) {
+    return "数据不合法"
+  }
+  //字符串性数据验证
+  if ((!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.press.newVal)) || (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.press.newVal)) || (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.bookName.newVal))) {
+    return "数据不合法"
+  }
+  return "correct"
+}
 export default {
   name: "BookListPage",
   data() {
     return {
+
       score: 0,
       scoreColors: ['#99A9BF', '#f68402', '#ff0026'],
-      count: 0,
+
       isOpenFilter: false,
       isOpenSearch: false,
       isOpenModify: false,
-
+      isOpenAdd:false,
 
       filters: {
         price: {
@@ -443,22 +500,55 @@ export default {
           oldVal: '',
           newVal: '',
         },
-      }
+      },
+      add: {
+        bookPrice: {
+          name: '价格',
+          newVal: '',
+        },
+        bookNumber: {
+          name: '库存',
+          newVal: '',
+        },
+        bookId: {
+          name: '书号',
+          newVal: '',
+        },
+        bookName: {
+          name: '书名',
+          newVal: '',
+        },
+        bookAuthor: {
+          name: '作者',
+          newVal: '',
+        },
+        press: {
+          name: '出版社',
+          newVal: '',
+        },
+        borrowNumber: {
+          name: '借阅数',
+          newVal: '',
+        },
+      },
     }
   },
   computed: {
     comments() {
+      //可能需要执行Ajax请求
       return this.$store.state.comments
     },
     filterList() {
       let bookList = this.$store.state.bookList
       let keyProp = propMap.get(this.keyProp)
       let keyWord = this.keyWord
+
       let fl = bookList.filter((book) => {
         return book.bookPrice >= this.filters.price.lowest && book.bookPrice <= this.filters.price.highest
             && book.bookNumber >= this.filters.bookNumber.lowest && book.bookNumber <= this.filters.bookNumber.highest
             && book.borrowNumber >= this.filters.borrowNumber.lowest && book.borrowNumber <= this.filters.borrowNumber.highest
       });
+
       fl = fl.filter((book) => ("" + book[keyProp]).indexOf(keyWord) !== -1)
       return fl;
     }
@@ -473,8 +563,17 @@ export default {
     openModify() {
       this.isOpenModify = true
     },
+    openAdd() {
+      this.isOpenAdd = true
+    },
     closeSearch() {
       this.isOpenSearch = false
+    },
+    closeModify() {
+      this.isOpenModify = false
+    },
+    closeAdd() {
+      this.isOpenAdd = false
     },
     reset() {
       this.filters = {
@@ -499,7 +598,7 @@ export default {
       ElNotification({
         title,
         message,
-        type: 'warning',
+        type: 'error',
       })
     },
     successPopUp(message, title) {
@@ -510,7 +609,6 @@ export default {
       })
     },
     handleModify(index, row) {
-      console.log(index, row)
       this.modify.bookId.oldVal = this.modify.bookId.newVal = row.bookId
       this.modify.bookName.oldVal = this.modify.bookName.newVal = row.bookName
       this.modify.bookAuthor.oldVal = this.modify.bookAuthor.newVal = row.bookAuthor
@@ -519,9 +617,36 @@ export default {
       this.modify.bookNumber.oldVal = this.modify.bookNumber.newVal = row.bookNumber
       this.modify.borrowNumber.oldVal = this.modify.borrowNumber.newVal = row.borrowNumber
     },
-    submit(){
-      alert("提交成功")
-    }
+    submitModify() {
+      //检验数据完整性
+      let msg = checkData(this.modify)
+
+      //判断检查信息，发送弹窗
+      if (msg !== "correct") {
+        this.warningPopUp(msg, "修改失败")
+        return
+      }
+
+      //合法数据将发送给服务器，进行下一步判断
+      this.closeModify()
+      return this.successPopUp("已成功修改数据", '修改成功')
+
+    },
+    submitAdd() {
+      //检验数据完整性
+      let msg = checkData(this.add)
+
+      //判断检查信息，发送弹窗
+      if (msg !== "correct") {
+        this.warningPopUp(msg, "修改失败")
+        return
+      }
+
+      //合法数据将发送给服务器，进行下一步判断
+      this.closeModify()
+      return this.successPopUp("已成功修改数据", '修改成功')
+
+    },
   }, mounted() {
     this.Search = Search
   }
