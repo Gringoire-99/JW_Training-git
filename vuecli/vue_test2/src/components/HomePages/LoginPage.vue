@@ -2,9 +2,9 @@
   <el-row :gutter="20">
     <transition
         appear
-        name="animate__animated animate__jackInTheBox"
         enter-active-class="animate__bounceIn"
-        leave-active-class="animate__bounceOut">
+        leave-active-class="animate__bounceOut"
+        name="animate__animated animate__jackInTheBox">
       <el-col :span="12" class="grid-content">
 
         <el-container @mouseleave="close">
@@ -18,8 +18,8 @@
                 <el-form-item label="学号" type="number">
                   <el-tooltip
                       class="box-item"
-                      effect="dark"
                       content="请输入您的学号"
+                      effect="dark"
                       placement="right-start"
                   >
                     <el-input v-model="form.id" type="number"/>
@@ -28,11 +28,11 @@
                 <el-form-item label="密码">
                   <el-tooltip
                       class="box-item"
-                      effect="dark"
                       content="请输入您的密码"
+                      effect="dark"
                       placement="right-start"
                   >
-                    <el-input v-model="form.password" type="password" show-password/>
+                    <el-input v-model="form.password" show-password type="password"/>
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item>
@@ -45,28 +45,29 @@
               </el-button>
               <transition
                   appear
-                  name="animate__animated animate__swing"
                   enter-active-class="animate__slideInRight"
-                  leave-active-class="animate__zoomOut">
-                <el-button @click="pushRegisterPage" v-show="showDetail" class="hvr-sweep-to-right">GO! 马上注册一个！
+                  leave-active-class="animate__zoomOut"
+                  name="animate__animated animate__swing">
+                <el-button v-show="showDetail" class="hvr-sweep-to-right" @click="pushRegisterPage">GO! 马上注册一个！
                   <el-icon>
                     <Promotion/>
                   </el-icon>
                 </el-button>
               </transition>
               <p></p>
-              <el-progress :percentage="progress" :indeterminate="true" v-show="showProgress" :status="status" :duration="1.5"/>
-              <el-alert v-show="loginStatusSuccess" @close="loginStatusSuccess=false"
+              <el-progress v-show="showProgress" :duration="1.5" :indeterminate="true" :percentage="progress"
+                           :status="status"/>
+              <el-alert v-show="loginStatusSuccess" :description="loginMessage"
+                        show-icon
                         title="登录成功"
                         type="success"
-                        :description="loginMessage"
-                        show-icon
+                        @close="loginStatusSuccess=false"
               />
-              <el-alert v-show="loginStatusFail" @close="loginStatusFail=false"
+              <el-alert v-show="loginStatusFail" :description="loginMessage"
+                        show-icon
                         title="登录失败"
                         type="error"
-                        :description="loginMessage"
-                        show-icon
+                        @close="loginStatusFail=false"
               />
 
             </el-main>
@@ -80,9 +81,9 @@
 
     <transition
         appear
-        name="animate__animated animate__jackInTheBox"
         enter-active-class="animate__jackInTheBox"
-        leave-active-class="animate__bounceOut">
+        leave-active-class="animate__bounceOut"
+        name="animate__animated animate__jackInTheBox">
       <el-col :span="12" class="grid-content">
         <el-container>
           <aside>
@@ -96,7 +97,7 @@
               </h1>
             </div>
             <p></p>
-            <img src="../../assets/loginImg.svg" style="width: 500px" class="hvr-grow-shadow">
+            <img class="hvr-grow-shadow" src="../../assets/loginImg.svg" style="width: 500px">
           </main>
 
         </el-container>
@@ -134,33 +135,39 @@ export default {
   methods: {
     submit() {
       let timer;
-      let id = this.form.id;
+      let userId = this.form.id;
       let password = this.form.password
-      if (id.length === 0 || password.length === 0) {
+      if (userId.length === 0 || password.length === 0) {
         this.loginStatusFail = true
         this.loginStatusSuccess = false
         this.loginMessage = "学号或密码不能为空"
         return
       }
-      axios.get('//http://localhost:8080/login', {
+      axios.get('/ToHost/login', {
         params: {
-          id,
+          userId,
           password
         }
       }).then(response => {
         this.status = this.progressStatus['success']
         this.loginMessage = "成功状态" + response.status
-        setTimeout(()=>{
+        console.log(response.data);
+        console.log(response.status);
+        console.log(response.statusText);
+        console.log(response.headers);
+        console.log(response.config);
+        setTimeout(() => {
           clearInterval(timer)
           this.progress = 0
           this.loginStatusSuccess = true
           this.loginStatusFail = false
-          window.setTimeout(()=>{
+          window.setTimeout(() => {
             this.showProgress = false
             this.status = ''
-          },3000)
-        },2000)
-      }).catch(() => {
+          }, 3000)
+        }, 2000)
+      }).catch((error) => {
+        console.log(error)
         this.loginMessage = '网络请求失败'
         this.status = this.progressStatus['exception']
         setTimeout(() => {
@@ -168,10 +175,10 @@ export default {
           this.progress = 0
           this.loginStatusFail = true
           this.loginStatusSuccess = false
-          window.setTimeout(()=>{
+          window.setTimeout(() => {
             this.showProgress = false
             this.status = ''
-          },3000)
+          }, 3000)
         }, 2000)
       })
       this.showProgress = true
