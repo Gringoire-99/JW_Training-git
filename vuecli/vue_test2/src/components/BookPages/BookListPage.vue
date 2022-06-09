@@ -182,7 +182,7 @@
                 </transition>
               </template>
             </el-table-column>
-
+            <!--表格属性-->
             <el-table-column label="书号" prop="bookId" sortable/>
             <el-table-column label="书名" prop="bookName" sortable/>
             <el-table-column label="作者" prop="bookAuthor" sortable/>
@@ -335,7 +335,7 @@
                     cancel-button-text="算了"
                     icon-color="#626AEF"
                     title="确定要修改信息吗？"
-                    @confirm="submit"
+                    @confirm="submitModify"
                 >
                   <template #reference>
                     <el-button type="primary">保存</el-button>
@@ -430,7 +430,7 @@ export default {
       isOpenFilter: false,
       isOpenSearch: false,
       isOpenModify: false,
-      isOpenAdd:false,
+      isOpenAdd: false,
 
       filters: {
         price: {

@@ -32,6 +32,7 @@ const state = {
         {bookId: '03', bookName: '红楼', bookAuthor: 'cxq', bookPrice: 65, bookNumber: 200, borrowNumber: 150000,press:'新华出版社'},
         {bookId: '04', bookName: '水浒', bookAuthor: 'lgz', bookPrice: 33, bookNumber: 20, borrowNumber: 15,press:'新华出版社'},
     ],
+    //只是用于展示容器 - 待重构
     comments:[
         {name:'009',comment:"很好看，孩子很喜欢"},
         {name:'cat',comment:"经典"},
