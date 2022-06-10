@@ -162,7 +162,7 @@ export default {
           reject(reason)
         })
       })
-
+      //是否能访问服务器
       p.then(data => {
         if (data.success) return Promise.resolve(data)
         else return Promise.reject(data)
@@ -184,41 +184,46 @@ export default {
             this.progress = 0;
           }, 4000)
         }, 2000)
-      }).then(data => {
-        console.log("登录成功")
-        this.loginMessage = '登录成功 code:' + data.code
-        this.loginStatusFail = false
-        this.loginStatusSuccess = true
-        //改变动画样式
-        this.status = this.progressStatus['success']
-        //等待两秒关闭进度条动画
-        setTimeout(() => {
-          setTimeout(() => {
-            clearInterval(timer)
-            this.loginStatusSuccess = false
-            this.showProgress = false
-            this.status = ''
-            this.progress = 0;
-          }, 5000)
-        }, 2000)
-      }, reason => {
-        console.log('登录失败：账号或密码错误')
-        this.loginMessage = '账号或密码错误 code:' + reason.code
-        this.loginStatusFail = true
-        this.loginStatusSuccess = false
-        //改变动画样式
-        this.status = this.progressStatus['exception']
-        //等待两秒关闭进度条动画
-        setTimeout(() => {
-          setTimeout(() => {
-            clearInterval(timer)
+      }).
+          //是否能登录到服务器
+          then(data => {
+            console.log("登录成功",data.data)
+            localStorage.setItem('userName', data.data.userName)
+            localStorage.setItem('userId', data.data.userId)
+            localStorage.setItem('role', data.data.role) //待加密
+            this.loginMessage = '登录成功 code:' + data.code
             this.loginStatusFail = false
-            this.showProgress = false
-            this.status = ''
-            this.progress = 0;
-          }, 5000)
-        }, 2000)
-      })
+            this.loginStatusSuccess = true
+            //改变动画样式
+            this.status = this.progressStatus['success']
+            //等待两秒关闭进度条动画
+            setTimeout(() => {
+              setTimeout(() => {
+                clearInterval(timer)
+                this.loginStatusSuccess = false
+                this.showProgress = false
+                this.status = ''
+                this.progress = 0;
+              }, 5000)
+            }, 2000)
+          }, reason => {
+            console.log('登录失败：账号或密码错误')
+            this.loginMessage = '账号或密码错误 code:' + reason.code
+            this.loginStatusFail = true
+            this.loginStatusSuccess = false
+            //改变动画样式
+            this.status = this.progressStatus['exception']
+            //等待两秒关闭进度条动画
+            setTimeout(() => {
+              setTimeout(() => {
+                clearInterval(timer)
+                this.loginStatusFail = false
+                this.showProgress = false
+                this.status = ''
+                this.progress = 0;
+              }, 5000)
+            }, 2000)
+          })
     },
     pushRegisterPage() {
       this.$router.replace('/RegisterPage');

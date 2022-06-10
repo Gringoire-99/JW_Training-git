@@ -3,8 +3,8 @@
     <el-col :span="12">
       <transition
           appear
-          name="animate__animated"
           enter-active-class="animate__bounceIn"
+          name="animate__animated"
       >
         <el-container>
           <el-header class="hvr-fade">
@@ -26,9 +26,9 @@
                   <el-col :span="11">
                     <el-date-picker
                         v-model="form.date1"
-                        type="date"
                         placeholder="选择日期"
                         style="width: 100%"
+                        type="date"
                     />
                   </el-col>
                   <el-col :span="2" class="text-center">
@@ -47,8 +47,8 @@
                 </el-form-item>
                 <el-form-item>
                   <el-popconfirm
-                      confirm-button-text="是"
                       cancel-button-text="算了"
+                      confirm-button-text="是"
                       icon-color="#626AEF"
                       title="确定要修改信息吗？"
                       @confirm="submit"
@@ -82,38 +82,38 @@
             </el-header>
             <el-main class="hvr-border-fade">
               <el-collapse>
-                <el-collapse-item title="正在读" name="1">
+                <el-collapse-item name="1" title="正在读">
                   <div>
                     <el-descriptions :column="3" border>
                       <el-descriptions-item
+                          align="center"
+                          class-name="my-content"
                           label="书名"
                           label-align="right"
-                          align="center"
                           label-class-name="my-label"
-                          class-name="my-content"
                           width="150px"
                       >{{ "西游记" }}
                       </el-descriptions-item
                       >
-                      <el-descriptions-item label="图书编号" label-align="right" align="center"
+                      <el-descriptions-item align="center" label="图书编号" label-align="right"
                       >{{ "205486490000" }}
                       </el-descriptions-item
                       >
-                      <el-descriptions-item label="作者" label-align="right" align="center"
+                      <el-descriptions-item align="center" label="作者" label-align="right"
                       >{{ "吴承恩" }}
                       </el-descriptions-item
                       >
-                      <el-descriptions-item label="还书时间" label-align="right" align="center">
+                      <el-descriptions-item align="center" label="还书时间" label-align="right">
                         <el-tag size="small">{{ "2022-6-12" }}</el-tag>
                       </el-descriptions-item>
-                      <el-descriptions-item label="描述" label-align="right" align="center"
+                      <el-descriptions-item align="center" label="描述" label-align="right"
                       >{{ "全书主要描写了孙悟空出世及大闹天宫后，遇见了唐僧、猪八戒、沙僧和白龙马，西行取经，一路上 ...".substring(0, 10) + "..." }}
                       </el-descriptions-item
                       >
                     </el-descriptions>
                   </div>
                 </el-collapse-item>
-                <el-collapse-item title="收藏图书" name="2">
+                <el-collapse-item name="2" title="收藏图书">
                   <div>
                     ！BOOKLIST！
                   </div>
@@ -121,7 +121,7 @@
                     ！BOOKLIST！
                   </div>
                 </el-collapse-item>
-                <el-collapse-item title="待还" name="3">
+                <el-collapse-item name="3" title="待还">
                   <div>
                     <el-timeline>
                       <el-timeline-item
@@ -144,9 +144,9 @@
     </el-col>
     <transition
         appear
-        name="animate__animated animate__jackInTheBox"
         enter-active-class="animate__jackInTheBox"
-        leave-active-class="animate__bounceOut">
+        leave-active-class="animate__bounceOut"
+        name="animate__animated animate__jackInTheBox">
       <el-col :span="12">
         <el-container>
           <aside>
@@ -157,10 +157,10 @@
               <h1>
                 欢迎使用<span style="color: #0794ff">LMS！</span><br>
               </h1>
-              尊敬的用户：！username！
+              尊敬的用户：
             </div>
             <p></p>
-            <img src="../../assets/userPageImg.svg" style="width: 500px" class="hvr-grow-shadow">
+            <img class="hvr-grow-shadow" src="../../assets/userPageImg.svg" style="width: 500px">
           </main>
         </el-container>
       </el-col>
@@ -195,29 +195,38 @@ export default {
 
     }
   },
+  computed:{
+    user(){
+      return this.$store.state.user
+    }
+  },
   methods: {
     submit() {
-      this.successPopUp('应用中...','修改成功')
+      this.successPopUp('应用中...', '修改成功')
     },
-    warningPopUp(message,title) {
+    warningPopUp(message, title) {
       ElNotification({
-        title ,
+        title,
         message,
         type: 'warning',
       })
     },
-    successPopUp(message,title) {
+    successPopUp(message, title) {
       ElNotification({
-        title ,
+        title,
         message,
         type: 'success',
       })
     }
   },
   mounted() {
-    //添加登录判断
-    this.warningPopUp("您还未登录",'无法访问服务')
-    //this.successPopUp('您已成功登录','欢迎，用户' + this.userInfo.userName)
+    let name = localStorage.getItem('userName')
+    console.log(name)
+    if (name!=null){
+      this.$store.state.user.userName = name
+      this.$store.state.user.userId = localStorage.getItem('userId')
+      this.$store.state.user.role = localStorage.getItem('role')
+    }
   }
 }
 </script>

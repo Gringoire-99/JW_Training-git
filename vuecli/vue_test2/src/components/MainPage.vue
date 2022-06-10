@@ -152,8 +152,7 @@ export default {
         query:{}
       })
     },
-  }
-
+  },
 
 }
 </script>
