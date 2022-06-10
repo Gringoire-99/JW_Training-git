@@ -134,6 +134,7 @@ export default {
   },
   methods: {
     submit() {
+
       let timer;
       let userId = this.form.id;
       let password = this.form.password
@@ -143,48 +144,81 @@ export default {
         this.loginMessage = "学号或密码不能为空"
         return
       }
-      axios.get('/ToHost/login', {
-        params: {
-          userId,
-          password
-        }
-      }).then(response => {
-        this.status = this.progressStatus['success']
-        this.loginMessage = "成功状态" + response.status
-        console.log(response.data);
-        console.log(response.status);
-        console.log(response.statusText);
-        console.log(response.headers);
-        console.log(response.config);
-        setTimeout(() => {
-          clearInterval(timer)
-          this.progress = 0
-          this.loginStatusSuccess = true
-          this.loginStatusFail = false
-          window.setTimeout(() => {
-            this.showProgress = false
-            this.status = ''
-          }, 3000)
-        }, 2000)
-      }).catch((error) => {
-        console.log(error)
-        this.loginMessage = '网络请求失败'
+      let p = new Promise((resolve, reject) => {
+        this.showProgress = true
+        timer = setInterval(() => {
+          this.progress += 20
+        }, 1500)
+        axios.get('/ToHost/login', {
+          params: {
+            userId,
+            password
+          }
+        }).then((Response => {
+          console.log("服务器访问成功");
+          resolve(Response.data)
+        })).catch(reason => {
+          console.log("服务器访问失败");
+          reject(reason)
+        })
+      })
+
+      p.then(data => {
+        if (data.success) return Promise.resolve(data)
+        else return Promise.reject(data)
+      }, reason => {
+        this.loginMessage = '访问失败:' + reason.code
+        this.loginStatusFail = true
+        this.loginStatusSuccess = false
+        //改变动画样式
         this.status = this.progressStatus['exception']
+        //等待两秒关闭进度条动画
         setTimeout(() => {
           clearInterval(timer)
-          this.progress = 0
           this.loginStatusFail = true
           this.loginStatusSuccess = false
-          window.setTimeout(() => {
+          setTimeout(() => {
+            this.loginStatusFail = false
             this.showProgress = false
             this.status = ''
-          }, 3000)
+            this.progress = 0;
+          }, 4000)
+        }, 2000)
+      }).then(data => {
+        console.log("登录成功")
+        this.loginMessage = '登录成功 code:' + data.code
+        this.loginStatusFail = false
+        this.loginStatusSuccess = true
+        //改变动画样式
+        this.status = this.progressStatus['success']
+        //等待两秒关闭进度条动画
+        setTimeout(() => {
+          setTimeout(() => {
+            clearInterval(timer)
+            this.loginStatusSuccess = false
+            this.showProgress = false
+            this.status = ''
+            this.progress = 0;
+          }, 5000)
+        }, 2000)
+      }, reason => {
+        console.log('登录失败：账号或密码错误')
+        this.loginMessage = '账号或密码错误 code:' + reason.code
+        this.loginStatusFail = true
+        this.loginStatusSuccess = false
+        //改变动画样式
+        this.status = this.progressStatus['exception']
+        //等待两秒关闭进度条动画
+        setTimeout(() => {
+          setTimeout(() => {
+            clearInterval(timer)
+            this.loginStatusFail = false
+            this.showProgress = false
+            this.status = ''
+            this.progress = 0;
+          }, 5000)
         }, 2000)
       })
-      this.showProgress = true
-      timer = setInterval(() => {
-        this.progress += 20
-      }, 1500)
     },
     pushRegisterPage() {
       this.$router.replace('/RegisterPage');
