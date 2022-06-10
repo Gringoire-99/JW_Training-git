@@ -190,6 +190,9 @@ export default {
             console.log("登录成功",data.data)
             localStorage.setItem('userName', data.data.userName)
             localStorage.setItem('userId', data.data.userId)
+            localStorage.setItem('gender', data.data.gender)
+            localStorage.setItem('remark', data.data.remark)
+            localStorage.setItem('birthdate', data.data.birthdate)
             localStorage.setItem('role', data.data.role) //待加密
             this.loginMessage = '登录成功 code:' + data.code
             this.loginStatusFail = false

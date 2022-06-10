@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS book
     press         VARCHAR(20) DEFAULT '未知出版社',
     book_number   INTEGER     NOT NULL,
     borrow_number INTEGER     DEFAULT 0,
+    remark        TEXT,
     CONSTRAINT CHECK ( book_price > 0 ),
     CHECK ( borrow_number >= 0 )
 );
@@ -17,8 +18,12 @@ CREATE TABLE IF NOT EXISTS user
     user_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_name     VARCHAR(100) NOT NULL,
     user_password VARCHAR(50)  NOT NULL,
+    gender        VARCHAR(12),
+    birthdate     DATE,
     role          VARCHAR(10) DEFAULT 'user',
-    CONSTRAINT CHECK ( role = 'user' OR role = 'admin')
+    remark        TEXT,
+    CONSTRAINT CHECK ( role = 'user' OR role = 'admin'),
+    CONSTRAINT CHECK ( gender = '男' OR role = '女')
 );
 CREATE TABLE IF NOT EXISTS borrow_record
 (
@@ -31,7 +36,38 @@ CREATE TABLE IF NOT EXISTS borrow_record
     CONSTRAINT FOREIGN KEY (borrow_book_ID) REFERENCES library_management_system.book (book_id) ON UPDATE CASCADE,
     CONSTRAINT FOREIGN KEY (borrow_user_ID) REFERENCES library_management_system.user (user_id) ON UPDATE CASCADE
 );
-INSERT INTO library_management_system.user(user_id, user_name, user_password, role)
-    VALUE (
-           202012900750, 'root', '123456', 'admin'
-    );
+INSERT INTO library_management_system.user(user_id, user_name, user_password, role, gender, remark)
+    VALUE (202012900750, 'root', '123456', 'admin', '男',
+           'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto consequatur deserunt, dolor harum, ipsam laborum magni modi molestiae nobis pariatur placeat quam quod sed temporibus veniam! Iste possimus quod vel?');
+INSERT INTO library_management_system.user(user_name, user_password)
+    VALUE
+    ('KK-99', '123456'),
+    ('LU666', '123456'),
+    ('FIFI', '123456'),
+    ('GG', '123456'),
+    ('LOVED', '123456');
+INSERT INTO library_management_system.book(book_id, book_name, book_author, book_price, press, book_number,
+                                           borrow_number)
+    VALUE (2022610, '西游记', '吴承恩', '69', '新华出版社', '2000', '105');
+INSERT INTO library_management_system.book(book_name, book_price, book_number)
+    VALUE
+    ('红楼梦', 56, 1596),
+    ('1984', 56, 1596),
+    ('百年孤独', 56, 1596),
+    ('三体', 56, 1596),
+    ('飘', 56, 1596),
+    ('哈利波特', 56, 1596),
+    ('三国演义', 56, 1596),
+    ('小王子', 56, 1596),
+    ('呐喊', 56, 1596),
+    ('平凡的世界', 56, 1596),
+    ('围城', 56, 1596),
+    ('悲惨世界', 56, 1596),
+    ('乌合之众', 56, 1596),
+    ('老人与海', 56, 1596),
+    ('论语', 56, 1596),
+    ('资本论', 56, 1596),
+    ('昆虫记', 56, 1596),
+    ('菊与刀', 56, 1596),
+    ('战争与和平', 56, 1596)
+;

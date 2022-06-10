@@ -33,6 +33,7 @@ const mutations = {
 
 }
 const state = {
+    //只是为了展示容器，待重构
     bookList: [
         {
             bookId: '01',
@@ -79,10 +80,14 @@ const state = {
         {name: 'meme', comment: "经典"},
     ],
     user: {
-        userName:'',
-        userId:'',
-        role:''
-    }
+        userName: '',
+        userId: '',
+        gender: '',
+        role: '',
+        birthdate: '',
+        remark: ''
+    },
+    isLogin: false
 }
 export const store = Vuex.createStore({
     state,

@@ -12,12 +12,12 @@
           </el-header>
           <div class="hvr-border-fade">
             <el-main>
-              <el-form :model="form" label-width="120px">
+              <el-form label-width="120px">
                 <el-form-item label="姓名">
-                  <el-input v-model="form.name"/>
+                  <el-input v-model="userName"/>
                 </el-form-item>
                 <el-form-item label="性别">
-                  <el-select v-model="form.region" placeholder="请选择你的性别">
+                  <el-select v-model="gender" placeholder="请选择你的性别">
                     <el-option label="男" value="male"/>
                     <el-option label="女" value="female"/>
                   </el-select>
@@ -25,7 +25,7 @@
                 <el-form-item label="出生日期">
                   <el-col :span="11">
                     <el-date-picker
-                        v-model="form.date1"
+                        v-model="birthdate"
                         placeholder="选择日期"
                         style="width: 100%"
                         type="date"
@@ -35,15 +35,15 @@
                     <span class="text-gray-500">-</span>
                   </el-col>
                   <el-col :span="11">
+                    <!-- 待添加模型-->
                     <el-time-picker
-                        v-model="form.date2"
                         placeholder="选择时间"
                         style="width: 100%"
                     />
                   </el-col>
                 </el-form-item>
                 <el-form-item label="备注">
-                  <el-input v-model="form.desc" type="textarea"/>
+                  <el-input v-model="remark" type="textarea"/>
                 </el-form-item>
                 <el-form-item>
                   <el-popconfirm
@@ -147,6 +147,7 @@
         enter-active-class="animate__jackInTheBox"
         leave-active-class="animate__bounceOut"
         name="animate__animated animate__jackInTheBox">
+
       <el-col :span="12">
         <el-container>
           <aside>
@@ -157,7 +158,9 @@
               <h1>
                 欢迎使用<span style="color: #0794ff">LMS！</span><br>
               </h1>
-              尊敬的用户：
+              <span>
+                尊敬的用户：{{ userName }}
+              </span>
             </div>
             <p></p>
             <img class="hvr-grow-shadow" src="../../assets/userPageImg.svg" style="width: 500px">
@@ -187,18 +190,27 @@ export default {
         {bookName: '书2', returnDate: "2022-05-15"},
         {bookName: '书2', returnDate: "2022-06-15"},
       ],
-      userInfo: {
-        userId: '',
-        userName: '',
-        userRole: '',
-      },
-
     }
   },
-  computed:{
-    user(){
-      return this.$store.state.user
-    }
+  computed: {
+    userName() {
+      return this.$store.state.user.userName
+    },
+    userId() {
+      return this.$store.state.user.userId
+    },
+    role() {
+      return this.$store.state.user.role
+    },
+    gender() {
+      return this.$store.state.user.gender
+    },
+    birthdate() {
+      return this.$store.state.user.birthdate
+    },
+    remark() {
+      return this.$store.state.user.remark
+    },
   },
   methods: {
     submit() {
@@ -219,40 +231,10 @@ export default {
       })
     }
   },
-  mounted() {
-    let name = localStorage.getItem('userName')
-    console.log(name)
-    if (name!=null){
-      this.$store.state.user.userName = name
-      this.$store.state.user.userId = localStorage.getItem('userId')
-      this.$store.state.user.role = localStorage.getItem('role')
-    }
-  }
+
 }
 </script>
-<!--<script lang="ts" setup>-->
-<!--import {reactive} from 'vue'-->
-<!--// do not use same name with ref-->
-<!--const form = reactive({-->
 
-<!--})-->
-<!--const activities = [-->
-<!--  {-->
-<!--    content: '书xxx',-->
-<!--    timestamp: '2022-04-15',-->
-<!--  },-->
-<!--  {-->
-<!--    content: '书xxx',-->
-<!--    timestamp: '2018-04-13',-->
-<!--  },-->
-<!--  {-->
-<!--    content: '书xxx',-->
-<!--    timestamp: '2010-04-11',-->
-<!--  },-->
-<!--]-->
-<!--const onSubmit = () => {-->
-<!--  console.log('submit!')-->
-<!--}-->
+<style>
 
-<!--</script>-->
-style>
+</style>

@@ -24,7 +24,6 @@ public class UserController {
         }
         Result<User> userResult = new Result<>(ErrorStatus.OK);
         userResult.setData(user);
-        request.getSession().setAttribute("user", user);
         return userResult;
     }
 }

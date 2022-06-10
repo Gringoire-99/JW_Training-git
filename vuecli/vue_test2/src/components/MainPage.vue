@@ -5,52 +5,65 @@
         <el-scrollbar>
           <el-menu :default-openeds="['1','2']">
 
-            <el-sub-menu index="1" class="hvr-radial-out" >
+            <el-sub-menu class="hvr-radial-out" index="1">
               <template #title>
                 <el-icon>
                   <HomeFilled/>
                 </el-icon>
                 主页<span class="fill" style="width: 103px"></span>
               </template>
-              <el-menu-item index="1-1" class="hvr-underline-from-center hvr-grow-shadow" @click="pushHomePage">回到主页</el-menu-item>
+              <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-1" @click="pushHomePage">回到主页
+              </el-menu-item>
 
               <el-menu-item-group>
                 <template #title>账号
                 </template>
-                <el-menu-item index="1-2" class="hvr-underline-from-center hvr-grow-shadow" @click="pushUserPage">我的[未登录]</el-menu-item>
-                <el-menu-item index="1-3" class="hvr-underline-from-center hvr-grow-shadow" @click="pushLoginPage">登录</el-menu-item>
-                <el-menu-item index="1-4" class="hvr-underline-from-center hvr-grow-shadow" @click="pushRegisterPage">注册</el-menu-item>
+                <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-2" @click="pushUserPage">我的
+                </el-menu-item>
+                <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-3" @click="pushLoginPage">登录
+                </el-menu-item>
+                <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-4" @click="pushRegisterPage">
+                  注册
+                </el-menu-item>
               </el-menu-item-group>
 
               <el-menu-item-group title="其他">
 
-                <el-sub-menu index="1-4" class="hvr-grow-shadow">
+                <el-sub-menu class="hvr-grow-shadow" index="1-4">
                   <template #title>
                     <el-icon>
                       <Avatar/>
                     </el-icon>
                     关于我们<span class="fill"></span>
                   </template>
-                  <el-menu-item index="1-4-1" class="hvr-underline-from-center hvr-grow-shadow" @click="pushTeamPage">团队</el-menu-item>
-                  <el-menu-item index="1-4-2" class="hvr-underline-from-center hvr-grow-shadow" @click="pushJoinUsPage">加入我们！</el-menu-item>
-                  <el-menu-item index="1-4-3" class="hvr-underline-from-center hvr-grow-shadow" @click="pushContactPage">联系方式</el-menu-item>
+                  <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-4-1" @click="pushTeamPage">
+                    团队
+                  </el-menu-item>
+                  <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-4-2" @click="pushJoinUsPage">
+                    加入我们！
+                  </el-menu-item>
+                  <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-4-3"
+                                @click="pushContactPage">联系方式
+                  </el-menu-item>
                 </el-sub-menu>
 
-                <el-sub-menu index="1-5" class="hvr-grow-shadow">
+                <el-sub-menu class="hvr-grow-shadow" index="1-5">
                   <template #title>
                     <el-icon>
                       <InfoFilled/>
                     </el-icon>
                     获取帮助<span class="fill"></span>
                   </template>
-                  <el-menu-item index="1-5-1" class="hvr-underline-from-center hvr-grow-shadow" @click="pushHelpPage">如何使用？</el-menu-item>
+                  <el-menu-item class="hvr-underline-from-center hvr-grow-shadow" index="1-5-1" @click="pushHelpPage">
+                    如何使用？
+                  </el-menu-item>
                 </el-sub-menu>
               </el-menu-item-group>
 
             </el-sub-menu>
 
 
-            <el-sub-menu index="2" class="hvr-radial-out">
+            <el-sub-menu class="hvr-radial-out" index="2">
               <template #title>
                 <el-icon>
                   <Document/>
@@ -59,12 +72,15 @@
               </template>
               <el-menu-item-group>
                 <template #title>管理</template>
-                <el-menu-item index="2-1" class="hvr-underline-from-center" @click="pushBookListPage">查看图书</el-menu-item>
-                <el-menu-item index="2-2" class="hvr-underline-from-center" @click="pushBookRecordPage">查看借阅记录</el-menu-item>
+                <el-menu-item class="hvr-underline-from-center" index="2-1" @click="pushBookListPage">查看图书
+                </el-menu-item>
+                <el-menu-item class="hvr-underline-from-center" index="2-2" @click="pushBookRecordPage">查看借阅记录
+                </el-menu-item>
               </el-menu-item-group>
-              <el-sub-menu index="2-4" class="hvr-grow-shadow">
+              <el-sub-menu class="hvr-grow-shadow" index="2-4">
                 <template #title>用户信息<span class="fill"></span></template>
-                <el-menu-item index="2-4-2" class="hvr-underline-from-center" @click="pushUserManagerPage">用户管理</el-menu-item>
+                <el-menu-item class="hvr-underline-from-center" index="2-4-2" @click="pushUserManagerPage">用户管理
+                </el-menu-item>
               </el-sub-menu>
             </el-sub-menu>
           </el-menu>
@@ -80,79 +96,109 @@
 <script>
 import 'animate.css'
 import 'hover.css'
+import {ElNotification} from 'element-plus'
+
 export default {
   name: "MainPage",
   data() {
     return {}
   },
-  methods:{
-    pushHomePage(){
+  methods: {
+    pushHomePage() {
       this.$router.push({
-        name:'HomePage',
-        query:{}
+        name: 'HomePage',
+        query: {}
       })
     },
-    pushUserPage(){
+    pushUserPage() {
       this.$router.push({
-        name:'UserPage',
-        query:{}
+        name: 'UserPage',
+        query: {}
       })
     },
-    pushLoginPage(){
+    pushLoginPage() {
       this.$router.push({
-        name:'LoginPage',
-        query:{}
+        name: 'LoginPage',
+        query: {}
       })
     },
-    pushRegisterPage(){
+    pushRegisterPage() {
       this.$router.push({
-        name:'RegisterPage',
-        query:{}
+        name: 'RegisterPage',
+        query: {}
       })
     },
-    pushContactPage(){
+    pushContactPage() {
       this.$router.push({
-        name:'ContactPage',
-        query:{}
+        name: 'ContactPage',
+        query: {}
       })
     },
-    pushHelpPage(){
+    pushHelpPage() {
       this.$router.push({
-        name:'HelpPage',
-        query:{}
+        name: 'HelpPage',
+        query: {}
       })
     },
-    pushJoinUsPage(){
+    pushJoinUsPage() {
       this.$router.push({
-        name:'JoinUsPage',
-        query:{}
+        name: 'JoinUsPage',
+        query: {}
       })
     },
-    pushTeamPage(){
+    pushTeamPage() {
       this.$router.push({
-        name:'TeamPage',
-        query:{}
+        name: 'TeamPage',
+        query: {}
       })
     },
-    pushBookListPage(){
+    pushBookListPage() {
       this.$router.push({
-        name:'BookListPage',
-        query:{}
+        name: 'BookListPage',
+        query: {}
       })
     },
-    pushBookRecordPage(){
+    pushBookRecordPage() {
       this.$router.push({
-        name:'BookRecordPage',
-        query:{}
+        name: 'BookRecordPage',
+        query: {}
       })
     },
-    pushUserManagerPage(){
+    pushUserManagerPage() {
       this.$router.push({
-        name:'UserManagerPage',
-        query:{}
+        name: 'UserManagerPage',
+        query: {}
       })
     },
+    warningPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'warning',
+      })
+    },
+    successPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'success',
+      })
+    }
   },
+  mounted() {
+    //在页面加载时，判断用户权限（游客，用户，管理员），在后端读取用户信息，初始化用户信息
+    let name = localStorage.getItem('userName')
+    if (name != null) {
+      this.$store.state.user.userName = name
+      this.$store.state.user.userId = localStorage.getItem('userId')
+      this.$store.state.user.role = localStorage.getItem('role')
+      this.$store.state.user.remark = localStorage.getItem('remark')
+      this.$store.state.user.gender = localStorage.getItem('gender')
+      this.$store.state.user.birthdate = localStorage.getItem('birthdate')
+    } else {
+      this.warningPopUp('您还未登录，仅能访问部分资源','未登录')
+    }
+  }
 
 }
 </script>

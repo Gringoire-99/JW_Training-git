@@ -10,4 +10,7 @@ public class User {
     String userName;
     String userPassword;
     String role;
+    String birthdate;
+    String gender;
+    String remark;
 }
