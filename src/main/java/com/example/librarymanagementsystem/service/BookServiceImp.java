@@ -1,9 +1,17 @@
 package com.example.librarymanagementsystem.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.librarymanagementsystem.dao.BookMapper;
 import com.example.librarymanagementsystem.model.Book;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service
 public class BookServiceImp implements BookService {
+    @Autowired
+    BookMapper bookMapper;
 
     @Override
     public void addBook(Book book) {
@@ -28,5 +36,12 @@ public class BookServiceImp implements BookService {
     @Override
     public Book getUserByWrapper(QueryWrapper<Book> wrapper) {
         return null;
+    }
+
+    @Override
+    public List<Book> getAllBook() {
+        QueryWrapper<Book> qw = new QueryWrapper<>();
+        List<Book> books = bookMapper.selectList(qw);
+        return books;
     }
 }

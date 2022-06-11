@@ -6,6 +6,8 @@ import com.example.librarymanagementsystem.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImp implements UserService {
     @Autowired
@@ -36,5 +38,11 @@ public class UserServiceImp implements UserService {
     @Override
     public User getUserByWrapper(QueryWrapper<User> wrapper) {
         return null;
+    }
+
+    @Override
+    public List<User> getAllUser() {
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        return userMapper.selectList(qw);
     }
 }

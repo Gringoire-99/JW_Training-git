@@ -3,6 +3,8 @@ package com.example.librarymanagementsystem.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.model.User;
 
+import java.util.List;
+
 public interface UserService {
     /**
      * 增删改查
@@ -17,4 +19,6 @@ public interface UserService {
     void deleteUser(Long id);
 
     User getUserByWrapper(QueryWrapper<User> wrapper);
+
+    List<User> getAllUser();
 }

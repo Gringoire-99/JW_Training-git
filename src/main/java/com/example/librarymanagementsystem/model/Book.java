@@ -1,11 +1,15 @@
 package com.example.librarymanagementsystem.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("library_management_system.book")
 public class Book {
     Long bookId;
