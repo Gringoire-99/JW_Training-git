@@ -51,7 +51,7 @@
                       confirm-button-text="是"
                       icon-color="#626AEF"
                       title="确定要修改信息吗？"
-                      @confirm="submit"
+                      @confirm="updateUser"
                   >
                     <template #reference>
                       <el-button type="primary">保存</el-button>
@@ -92,22 +92,26 @@
                           label-align="right"
                           label-class-name="my-label"
                           width="150px"
-                      >{{ "西游记" }}
+                      >{{ readingBook.bookName }}
                       </el-descriptions-item
                       >
                       <el-descriptions-item align="center" label="图书编号" label-align="right"
-                      >{{ "205486490000" }}
+                      >{{ readingBook.bookId }}
                       </el-descriptions-item
                       >
                       <el-descriptions-item align="center" label="作者" label-align="right"
-                      >{{ "吴承恩" }}
+                      >{{ readingBook.bookAuthor }}
                       </el-descriptions-item
                       >
                       <el-descriptions-item align="center" label="还书时间" label-align="right">
-                        <el-tag size="small">{{ "2022-6-12" }}</el-tag>
+                        <el-tag size="small">{{ returnDate }}</el-tag>
                       </el-descriptions-item>
                       <el-descriptions-item align="center" label="描述" label-align="right"
-                      >{{ "全书主要描写了孙悟空出世及大闹天宫后，遇见了唐僧、猪八戒、沙僧和白龙马，西行取经，一路上 ...".substring(0, 10) + "..." }}
+                      >{{ readingBook.remark }}
+                      </el-descriptions-item
+                      >
+                      <el-descriptions-item align="center" label="出版社" label-align="right"
+                      >{{ readingBook.press }}
                       </el-descriptions-item
                       >
                     </el-descriptions>
@@ -115,21 +119,18 @@
                 </el-collapse-item>
                 <el-collapse-item name="2" title="收藏图书">
                   <div>
-                    ！BOOKLIST！
-                  </div>
-                  <div>
-                    ！BOOKLIST！
+                    施工中
                   </div>
                 </el-collapse-item>
                 <el-collapse-item name="3" title="待还">
                   <div>
                     <el-timeline>
                       <el-timeline-item
-                          v-for="(activity, index) in bookRecord"
+                          v-for="(activity, index) in records"
                           :key="index"
                           :timestamp="activity.returnDate"
                       >
-                        {{ activity.bookName }}
+                        还书号：{{ activity.borrowBookId }}
                       </el-timeline-item>
                     </el-timeline>
                   </div>
@@ -187,12 +188,17 @@ export default {
         birthdate: '',
         remark: '',
       },
-      bookRecord: [
-        {bookName: '书1', returnDate: "2022-04-15"},
-        {bookName: '书2', returnDate: "2022-05-15"},
-        {bookName: '书2', returnDate: "2022-06-15"},
-      ],
-      bookList:[]
+      records: [],
+      readingBook: {
+        bookAuthor: '',
+        bookId: '',
+        bookName: '',
+        bookPrice: '',
+        borrowNum: '',
+        press: '',
+        remark: '',
+      },
+      returnDate: ''
     }
   },
 
@@ -214,14 +220,18 @@ export default {
     },
   },
   methods: {
-    submit() {
-      this.successPopUp('应用中...', '修改成功')
-    },
     warningPopUp(message, title) {
       ElNotification({
         title,
         message,
         type: 'warning',
+      })
+    },
+    errorPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'error',
       })
     },
     successPopUp(message, title) {
@@ -230,25 +240,50 @@ export default {
         message,
         type: 'success',
       })
+    },
+    updateUser() {
+     let user ={}
+      user.userName = ""+this.userName
+      user.userId =""+this.userId
+      user.userPassword = null
+      user.gender = ""+this.gender
+      user.birthdate = this.birthdate===null?'':this.birthdate.substring(0,9)
+      user.remark = this.remark
+      console.log(user.birthdate)
+      console.log(user)
+      axios.post('/ToHost/updateUser',user
+      ).then(value => {
+        this.successPopUp('数据已递交', '修改成功')
+      }, reason => {
+        this.errorPopUp('网络未响应', '修改失败')
+      })
     }
-  },mounted() {
-    if (this.$store.state.isLogin){
-      this.form.birthdate=this.birthdate
-      this.form.gender=this.gender
+  }, mounted() {
+    if (this.$store.state.isLogin) {
+      this.form.birthdate = this.birthdate
+      this.form.gender = this.gender
       this.form.userName = this.userName
-      this.form.userId=this.userId
-      this.form.remark =this.remark
-
-      let p = new Promise((resolve, reject) => {
-        axios.get('/ToHost/getUserDetail',{
-          params:{
-            userId:this.form.userId
+      this.form.userId = this.userId
+      this.form.remark = this.remark
+      //挂载时申请用户的详细数据
+      new Promise(() => {
+        axios.get('/ToHost/getUserDetail', {
+          params: {
+            userId: this.form.userId
           }
         }).then(value => {
-          console.log(value)
-        },reason => {
-          this.warningPopUp('访问服务器失败：'+reason.code,'获取信息失败')
-          return;
+          console.log(value);
+          if (value.data.code !== 200) {
+            this.errorPopUp('获取时发生错误', '获取信息失败')
+            return
+          }
+          if (value.data.data !== null) {
+            this.records = value.data.data.records
+            this.readingBook = value.data.data.readingBook
+            this.returnDate = this.records[0].returnDate
+          }
+        }, reason => {
+          this.errorPopUp(reason.code, '服务器未响应')
         })
 
       })

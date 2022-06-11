@@ -10,6 +10,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.4",
     "@vitejs/plugin-vue": "^2.3.3",
+    "@vue/reactivity": "^3.2.37",
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
     "bootstrap": "^5.1.3",

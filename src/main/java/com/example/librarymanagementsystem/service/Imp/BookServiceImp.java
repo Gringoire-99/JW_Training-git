@@ -1,8 +1,9 @@
-package com.example.librarymanagementsystem.service;
+package com.example.librarymanagementsystem.service.Imp;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.dao.BookMapper;
 import com.example.librarymanagementsystem.model.Book;
+import com.example.librarymanagementsystem.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,9 @@ public class BookServiceImp implements BookService {
 
     @Override
     public Book getBookById(Long id) {
-        return null;
+        QueryWrapper<Book> qw = new QueryWrapper<>();
+        qw.eq("book_id", id);
+        return bookMapper.selectOne(qw);
     }
 
     @Override

@@ -1,8 +1,9 @@
-package com.example.librarymanagementsystem.service;
+package com.example.librarymanagementsystem.service.Imp;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.dao.UserMapper;
 import com.example.librarymanagementsystem.model.User;
+import com.example.librarymanagementsystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,9 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void updateUser(User user) {
-
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        qw.eq("user_id", user.getUserId());
+        userMapper.update(user, qw);
     }
 
     @Override

@@ -3,16 +3,15 @@ package com.example.librarymanagementsystem;
 import com.example.librarymanagementsystem.model.Book;
 import com.example.librarymanagementsystem.model.BorrowRecord;
 import com.example.librarymanagementsystem.model.User;
-import com.example.librarymanagementsystem.service.BookServiceImp;
-import com.example.librarymanagementsystem.service.BorrowBookRecordImp;
-import com.example.librarymanagementsystem.service.UserServiceImp;
+import com.example.librarymanagementsystem.model.UserDetail;
+import com.example.librarymanagementsystem.service.Imp.BookServiceImp;
+import com.example.librarymanagementsystem.service.Imp.BorrowBookRecordImp;
+import com.example.librarymanagementsystem.service.Imp.UserServiceImp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @SpringBootTest
 class LibraryManagementSystemApplicationTests {
@@ -40,36 +39,47 @@ class LibraryManagementSystemApplicationTests {
 //        }
     }
 
-    @Test
-    void createBR() {
-        Random rndYear = new Random();
-        Random rndMonth = new Random();
-        Random rndDay = new Random();
-        List<User> allUser = userServiceImp.getAllUser();
-        List<Book> allBook = bookServiceImp.getAllBook();
-        List<BorrowRecord> records = new ArrayList<>();
-        Random randomUser = new Random();
-        Random randomBook = new Random();
-        for (int i = 0; i < 100; i++) {
-            int year = 2022;
-            int month = rndMonth.nextInt(1, 12);
-            int Day = rndDay.nextInt(1, 30);
-            int returnDay = Day > 23 ? Day + 1 : Day + 7;
-            Long userId = allUser.get(randomUser.nextInt(0, allUser.size() - 1)).getUserId();
-            Long bookId = allBook.get(randomBook.nextInt(0, allBook.size() - 1)).getBookId();
-            String borrowDate = "" + year + "-" + month + "-" + Day;
-            String returnDate = "" + year + "-" + month + "-" + returnDay;
-            borrowBookRecordImp.addRecord(new BorrowRecord(bookId, userId, borrowDate, returnDate));
-
-        }
-    }
+//    @Test
+//    void createBR() {
+//        //批量插入测试数据
+//        Random rndMonth = new Random();
+//        Random rndDay = new Random();
+//        List<User> allUser = userServiceImp.getAllUser();
+//        List<Book> allBook = bookServiceImp.getAllBook();
+//        List<BorrowRecord> records = new ArrayList<>();
+//        Random randomUser = new Random();
+//        Random randomBook = new Random();
+//        for (int i = 0; i < 100; i++) {
+//            int year = 2022;
+//            int month = rndMonth.nextInt(1, 12);
+//            int Day = rndDay.nextInt(1, 27);
+//            int returnDay = Day > 20 ? Day + 1 : Day + 7;
+//            Long userId = allUser.get(randomUser.nextInt(0, allUser.size() - 1)).getUserId();
+//            Long bookId = allBook.get(randomBook.nextInt(0, allBook.size() - 1)).getBookId();
+//            String borrowDate = "" + year + "-" + month + "-" + Day;
+//            String returnDate = "" + year + "-" + month + "-" + returnDay;
+//            borrowBookRecordImp.addRecord(new BorrowRecord(bookId, userId, borrowDate, returnDate));
+//
+//        }
+//    }
 
     @Test
     void testGetRecords() {
-        for (BorrowRecord borrowRecord : borrowBookRecordImp.getRecord(202012900750L)) {
-            System.out.println(borrowRecord);
-        }
+        UserDetail userDetail = null;
+        List<BorrowRecord> record = borrowBookRecordImp.getRecord(202012900750L);
+        Book book = bookServiceImp.getBookById(record.get(0).getBorrowBookId());
+        userDetail = new UserDetail(record, book);
 
+        System.out.println(userDetail);
+    }
+
+    @Test
+    void testUpdateUser() {
+        User user = new User();
+        user.setUserId(202012900755L);
+        user.setUserName("LLD");
+        user.setGender(null);
+        userServiceImp.updateUser(user);
     }
 }
 

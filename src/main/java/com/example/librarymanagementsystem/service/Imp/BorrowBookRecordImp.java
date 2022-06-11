@@ -1,9 +1,10 @@
-package com.example.librarymanagementsystem.service;
+package com.example.librarymanagementsystem.service.Imp;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.librarymanagementsystem.dao.BorrowRecordMapper;
 import com.example.librarymanagementsystem.model.BorrowRecord;
+import com.example.librarymanagementsystem.service.BorrowBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,8 @@ public class BorrowBookRecordImp implements BorrowBookService {
     @Override
     public List<BorrowRecord> getRecord(Long userId) {
         QueryWrapper<BorrowRecord> qw = new QueryWrapper<>();
-        qw.eq("borrow_", userId);
+        qw.orderByDesc("borrow_date");
+        qw.eq("borrow_user_id", userId);
         return borrowRecordMapper.selectList(qw);
     }
 }

@@ -95,7 +95,7 @@ router.beforeEach(async(to, from, next) => {
     let role = localStorage.getItem('role')
     if (to.meta.isAuth) {
         // 待加密token
-        if (role !==  +'user' && role !== 'admin') {
+        if (role !== 'user' && role !== 'admin') {
             next('/LoginPage')
             return
         }
