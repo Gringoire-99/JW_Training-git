@@ -9,13 +9,13 @@
 
         <el-container @mouseleave="close">
           <el-header class="hvr-fade">
-            <h4>登录账号</h4>
+            <h4>{{ isLogin ? '重新登录？' : '登录账号' }}</h4>
           </el-header>
           <template class="hvr-border-fade">
 
             <el-main>
-              <el-form :model="form">
-                <el-form-item label="学号" type="number">
+              <el-form>
+                <el-form-item v-model=form label="学号" type="number">
                   <el-tooltip
                       class="box-item"
                       content="请输入您的学号"
@@ -25,7 +25,7 @@
                     <el-input v-model="form.id" type="number"/>
                   </el-tooltip>
                 </el-form-item>
-                <el-form-item label="密码">
+                <el-form-item  label="密码">
                   <el-tooltip
                       class="box-item"
                       content="请输入您的密码"
@@ -36,8 +36,19 @@
                   </el-tooltip>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="submit">登录</el-button>
-                  <el-button>取消</el-button>
+                  <el-button type="primary" @keydown.enter="submit  " @click="submit">登录</el-button>
+
+                  <el-popconfirm
+                      confirm-button-text="确定"
+                      cancel-button-text="取消"
+                      icon-color="#626AEF"
+                      title="确认要退出吗？"
+                      @confirm="logout"
+                  >
+                    <template #reference>
+                    <el-button>{{ isLogin ? '退出登录' : '取消' }}</el-button>
+                    </template>
+                  </el-popconfirm>
                 </el-form-item>
               </el-form>
               <el-button @mouseenter="open">
@@ -110,6 +121,7 @@
 
 <script>
 import axios from 'axios'
+import {ElNotification} from "element-plus";
 
 export default {
   name: "LoginPage",
@@ -117,9 +129,7 @@ export default {
     return {
       form: {
         id: '',
-        name: '',
         password: '',
-        gender: ''
       },
       showDetail: false,
       loginStatusFail: false,
@@ -130,6 +140,13 @@ export default {
       progress: 0,
       status: '',
       progressStatus: {'success': "success", "exception": "exception"}
+    }
+  }, computed: {
+    isLogin() {
+      return this.$store.state.isLogin
+    },
+    userId(){
+      return this.$store.state.userId
     }
   },
   methods: {
@@ -187,7 +204,7 @@ export default {
       }).
           //是否能登录到服务器
           then(data => {
-            console.log("登录成功",data.data)
+            console.log("登录成功", data.data)
             localStorage.setItem('userName', data.data.userName)
             localStorage.setItem('userId', data.data.userId)
             localStorage.setItem('gender', data.data.gender)
@@ -207,7 +224,8 @@ export default {
                 this.showProgress = false
                 this.status = ''
                 this.progress = 0;
-              }, 5000)
+                location.reload()
+              }, 1500)
             }, 2000)
           }, reason => {
             console.log('登录失败：账号或密码错误')
@@ -228,6 +246,11 @@ export default {
             }, 2000)
           })
     },
+    logout() {
+      localStorage.clear()
+      location.reload()
+    }
+    ,
     pushRegisterPage() {
       this.$router.replace('/RegisterPage');
     },
@@ -238,8 +261,29 @@ export default {
       this.showDetail = false
 
     },
+    warningPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'warning',
+      })
+    },
+    successPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'success',
+      })
+    }
 
   },
+  mounted() {
+    if (this.isLogin) {
+      this.successPopUp('您已登录，是否要退出登录？', '已登录')
+    } else {
+      this.warningPopUp('您还未登录请先登录', '未登录')
+    }
+  }
 
 
 }

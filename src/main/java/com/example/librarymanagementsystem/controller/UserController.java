@@ -5,7 +5,7 @@ import com.example.librarymanagementsystem.common.Result;
 import com.example.librarymanagementsystem.model.User;
 import com.example.librarymanagementsystem.service.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +16,7 @@ public class UserController {
     @Autowired
     UserServiceImp userServiceImp;
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public Result<User> login(@RequestParam Long userId, @RequestParam String password, HttpServletRequest request) {
         User user = userServiceImp.getUser(userId, password);
         if (user == null) {
@@ -26,4 +26,6 @@ public class UserController {
         userResult.setData(user);
         return userResult;
     }
+//    @GetMapping("/getUserDetail")
+//    public Result<>
 }

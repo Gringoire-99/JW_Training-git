@@ -11,6 +11,7 @@ import TeamPage from "@/components/StaticPages/TeamPage";
 import BookListPage from "@/components/BookPages/BookListPage";
 import BookRecordPage from "@/components/BookPages/BookRecordPage";
 import UserManagerPage from "@/components/BookPages/UserManagerPage";
+import loginPage from "@/components/HomePages/LoginPage";
 
 const routes = [
 
@@ -23,7 +24,10 @@ const routes = [
     {
         name: 'UserPage',
         path: '/UserPage',
-        component: UserPage
+        component: UserPage,
+        meta: {
+            isAuth: true,
+        }
     },
     {
         name: 'LoginPage',
@@ -58,20 +62,52 @@ const routes = [
     {
         name: 'BookListPage',
         path: '/BookListPage',
-        component: BookListPage
+        component: BookListPage,
+        meta: {
+            isAuth: true,
+        }
     },
     {
         name: 'BookRecordPage',
         path: '/BookRecordPage',
-        component:BookRecordPage
+        component: BookRecordPage,
+        meta: {
+            isAuth: true,
+            isAdmin: true,
+        }
     },
     {
         name: 'UserManagerPage',
         path: '/UserManagerPage',
-        component: UserManagerPage
+        component: UserManagerPage,
+        meta: {
+            isAuth: true,
+            isAdmin: true,
+
+        }
     },
 ]
-export default createRouter({
+const router = createRouter({
     history: createWebHashHistory(),
     routes
 })
+router.beforeEach(async(to, from, next) => {
+    let role = localStorage.getItem('role')
+    if (to.meta.isAuth) {
+        // 待加密token
+        if (role !==  +'user' && role !== 'admin') {
+            next('/LoginPage')
+            return
+        }
+        if (to.meta.isAdmin){
+            if (role==='admin'){
+                next()
+                return
+            }
+            next(false)
+            return
+        }
+    }
+    next()
+})
+export default router

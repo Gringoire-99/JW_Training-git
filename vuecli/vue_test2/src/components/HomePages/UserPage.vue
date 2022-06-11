@@ -14,10 +14,10 @@
             <el-main>
               <el-form label-width="120px">
                 <el-form-item label="姓名">
-                  <el-input v-model="userName"/>
+                  <el-input v-model="form.userName"/>
                 </el-form-item>
                 <el-form-item label="性别">
-                  <el-select v-model="gender" placeholder="请选择你的性别">
+                  <el-select v-model="form.gender" placeholder="请选择你的性别">
                     <el-option label="男" value="male"/>
                     <el-option label="女" value="female"/>
                   </el-select>
@@ -25,7 +25,7 @@
                 <el-form-item label="出生日期">
                   <el-col :span="11">
                     <el-date-picker
-                        v-model="birthdate"
+                        v-model="form.birthdate"
                         placeholder="选择日期"
                         style="width: 100%"
                         type="date"
@@ -43,7 +43,7 @@
                   </el-col>
                 </el-form-item>
                 <el-form-item label="备注">
-                  <el-input v-model="remark" type="textarea"/>
+                  <el-input v-model="form.remark" type="textarea"/>
                 </el-form-item>
                 <el-form-item>
                   <el-popconfirm
@@ -174,33 +174,34 @@
 </template>
 <script>
 import {ElNotification} from 'element-plus'
+import axios from "axios";
+//待包装
 
 export default {
   data() {
     return {
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        desc: '',
+        userName: '',
+        userId: '',
+        gender: '',
+        birthdate: '',
+        remark: '',
       },
       bookRecord: [
         {bookName: '书1', returnDate: "2022-04-15"},
         {bookName: '书2', returnDate: "2022-05-15"},
         {bookName: '书2', returnDate: "2022-06-15"},
       ],
+      bookList:[]
     }
   },
+
   computed: {
     userName() {
       return this.$store.state.user.userName
     },
     userId() {
       return this.$store.state.user.userId
-    },
-    role() {
-      return this.$store.state.user.role
     },
     gender() {
       return this.$store.state.user.gender
@@ -230,7 +231,30 @@ export default {
         type: 'success',
       })
     }
-  },
+  },mounted() {
+    if (this.$store.state.isLogin){
+      this.form.birthdate=this.birthdate
+      this.form.gender=this.gender
+      this.form.userName = this.userName
+      this.form.userId=this.userId
+      this.form.remark =this.remark
+
+      let p = new Promise((resolve, reject) => {
+        axios.get('/ToHost/getUserDetail',{
+          params:{
+            userId:this.form.userId
+          }
+        }).then(value => {
+          console.log(value)
+        },reason => {
+          this.warningPopUp('访问服务器失败：'+reason.code,'获取信息失败')
+          return;
+        })
+
+      })
+    }
+
+  }
 
 }
 </script>

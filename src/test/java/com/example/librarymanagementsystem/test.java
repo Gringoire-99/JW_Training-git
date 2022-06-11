@@ -64,5 +64,12 @@ class LibraryManagementSystemApplicationTests {
         }
     }
 
+    @Test
+    void testGetRecords() {
+        for (BorrowRecord borrowRecord : borrowBookRecordImp.getRecord(202012900750L)) {
+            System.out.println(borrowRecord);
+        }
+
+    }
 }
 

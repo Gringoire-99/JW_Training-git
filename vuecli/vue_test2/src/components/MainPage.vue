@@ -189,6 +189,7 @@ export default {
     //在页面加载时，判断用户权限（游客，用户，管理员），在后端读取用户信息，初始化用户信息
     let name = localStorage.getItem('userName')
     if (name != null) {
+      this.$store.state.isLogin = true
       this.$store.state.user.userName = name
       this.$store.state.user.userId = localStorage.getItem('userId')
       this.$store.state.user.role = localStorage.getItem('role')
