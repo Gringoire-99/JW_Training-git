@@ -29,6 +29,8 @@
                         placeholder="选择日期"
                         style="width: 100%"
                         type="date"
+                        value-format="YYYY-MM-DD"
+
                     />
                   </el-col>
                   <el-col :span="2" class="text-center">
@@ -177,7 +179,15 @@
 import {ElNotification} from 'element-plus'
 import axios from "axios";
 //待包装
+const checkData = function (data) {
+  console.log(data.userName);
+  if (data===null)return false
+  if (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.userName)){
+    return '姓名为空或包含非法字符'
+  }
+  return 'correct'
 
+}
 export default {
   data() {
     return {
@@ -242,18 +252,31 @@ export default {
       })
     },
     updateUser() {
+      let updateMsg=''
      let user ={}
-      user.userName = ""+this.userName
-      user.userId =""+this.userId
+      user.userName = this.form.userName
+      user.userId =this.form.userId
       user.userPassword = null
-      user.gender = ""+this.gender
-      user.birthdate = this.birthdate===null?'':this.birthdate.substring(0,9)
-      user.remark = this.remark
+      user.gender = this.form.gender==='null'?null:this.form.gender
+      console.log(this.form.birthdate)
+      user.birthdate = this.form.birthdate==='null'?null:this.form.birthdate.toString()
+      user.remark = this.form.remark==='null'?null:this.form.remark
+      updateMsg = checkData(user)
+      console.log(updateMsg)
+      if (updateMsg !=='correct'){
+        this.warningPopUp(updateMsg,'输入有误')
+        return
+      }
+
       console.log(user.birthdate)
       console.log(user)
       axios.post('/ToHost/updateUser',user
       ).then(value => {
         this.successPopUp('数据已递交', '修改成功')
+        localStorage.setItem('userName', user.userName)
+        localStorage.setItem('gender', user.gender)
+        localStorage.setItem('remark', user.remark)
+        localStorage.setItem('birthdate', user.birthdate)
       }, reason => {
         this.errorPopUp('网络未响应', '修改失败')
       })

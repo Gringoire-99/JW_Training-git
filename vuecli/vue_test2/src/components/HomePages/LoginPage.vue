@@ -151,7 +151,7 @@ export default {
   },
   methods: {
     submit() {
-
+      //存在重复访问问题，需要添加请求拦截
       let timer;
       let userId = this.form.id;
       let password = this.form.password

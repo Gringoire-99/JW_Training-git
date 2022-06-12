@@ -46,7 +46,6 @@
               <el-form-item label="用户类型">
                 <el-select v-model="form.role" placeholder="选择你的角色">
                   <el-option label="普通用户" value="user"/>
-                  <el-option label="管理员" value="admin"/>
                 </el-select>
               </el-form-item>
               <el-form-item>
@@ -116,7 +115,15 @@
 
 <script>
 import axios from "axios";
+const checkData = function (data) {
+  console.log(data.userName);
+  if (data===null)return false
+  if (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.userName)){
+    return '姓名为空或包含非法字符'
+  }
+  return 'correct'
 
+}
 export default {
   name: "RegisterPage",
   data() {
@@ -139,55 +146,19 @@ export default {
   },
   methods: {
     submit() {
+      let user = {}
       let timer;
+
       let id = this.form.id;
       let name = this.form.name;
       let pwd = this.form.password;
       let role = this.form.role;
-      if (id.length === 0 || name.length === 0 || pwd.length === 0 || role.length === 0) {
+      if (!checkData()) {
         this.registerSuccessStatus = false;
         this.registerFailStatus = true;
         this.registerMessage = "有空选项"
         return
       }
-      this.showProgress = true
-      timer = setInterval(() => {
-        this.progress += 20
-      }, 1500)
-      axios.get('http://localhost:8080/register', {
-        params: {
-          id,
-          name,
-          pwd,
-          role
-        }
-      }).then(response => {
-        this.status = this.progressStatus['success']
-        this.registerMessage = "成功状态" + response.status
-        setTimeout(() => {
-          clearInterval(timer)
-          this.progress = 0
-          this.registerSuccessStatus = true
-          this.registerFailStatus = false
-          window.setTimeout(() => {
-            this.showProgress = false
-            this.status = ''
-          }, 3000)
-        }, 2000)
-      }).catch(() => {
-        this.registerMessage = '网络请求失败'
-        this.status = this.progressStatus['exception']
-        setTimeout(() => {
-          clearInterval(timer)
-          this.progress = 0
-          this.registerFailStatus = true
-          this.registerSuccessStatus = false
-          window.setTimeout(() => {
-            this.showProgress = false
-            this.status = ''
-          }, 3000)
-        }, 2000)
-      })
 
     }
   }

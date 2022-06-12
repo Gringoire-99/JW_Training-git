@@ -55,7 +55,6 @@ public class UserController {
 
     @PostMapping("/updateUser")
     public void updateUser(@RequestBody User user) {
-        System.out.println(user);
         userServiceImp.updateUser(user);
     }
 }
