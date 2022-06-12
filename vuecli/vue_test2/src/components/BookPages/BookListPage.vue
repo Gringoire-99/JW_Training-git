@@ -32,7 +32,6 @@
             <div v-show="isOpenSearch" style="width: 500px;display: flex">
               <el-input
                   placeholder="请输入查找关键词"
-                  :prefix-icon="Search"
                   v-model="keyWord"
               ></el-input>
               <el-select class="m-2" placeholder="Select" size="large" v-model="keyProp">
@@ -426,11 +425,11 @@ propMap.set("价格", "bookPrice")
 let checkData = function (data) {
   //数值性数据验证
   if ((!/^\d+$/.test("" + data.bookId.newVal)) || (!/^\d+$/.test("" + data.bookNumber.newVal)) || (!/^\d+$/.test("" + data.borrowNumber.newVal)) || (!/^\d+$/.test("" + data.bookPrice.newVal))) {
-    return "数据不合法"
+    return "含有错误数据"
   }
   //字符串性数据验证
   if ((!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.press.newVal)) || (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.press.newVal)) || (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.bookName.newVal))) {
-    return "数据不合法"
+    return "含有错误数据"
   }
   return "correct"
 }
@@ -442,7 +441,7 @@ export default {
         Search
       },
       currentPage: 1,
-      pageSize: 20,
+      pageSize: 200,
 
       score: 0,
       scoreColors: ['#99A9BF', '#f68402', '#ff0026'],
@@ -668,91 +667,127 @@ export default {
         this.warningPopUp(msg, "修改失败")
         return
       }
+      let book = {
+        bookId: this.modify.bookId.newVal,
+        bookName: this.modify.bookName.newVal,
+        bookPrice: this.modify.bookPrice.newVal,
+        bookAuthor: this.modify.bookAuthor.newVal,
+        press: this.modify.press.newVal,
+        bookNumber: this.modify.bookNumber.newVal,
+        borrowNumber: this.modify.borrowNumber.newVal,
+        remark: null
+      }
+
+      new Promise((resolve, reject) => {
+        //应该使用put
+        axios.post('/ToHost/updateBook', book).then(value => {
+          if (value.data.code != 200) {
+            reject()
+          }
+          resolve()
+        }, reason => {
+          this.errorPopUp('网络异常', '更新失败')
+        })
+      }).then(value => {
+        this.successPopUp('数据已更新！', '更新成功')
+        this.request()
+        this.closeModify()
+      }, reason => {
+        this.errorPopUp('数据更新时出现异常', '更新失败')
+      })
 
       //合法数据将发送给服务器，进行下一步判断
-      this.closeModify()
-      return this.successPopUp("已成功修改数据", '修改成功')
 
     },
     submitAdd() {
       //检验数据完整性
       let msg = checkData(this.add)
-
+      let book = {
+        bookId: this.add.bookId.newVal,
+        bookName: this.add.bookName.newVal,
+        bookPrice: this.add.bookPrice.newVal,
+        bookAuthor: this.add.bookAuthor.newVal,
+        press: this.add.press.newVal,
+        bookNumber: this.add.bookNumber.newVal,
+        borrowNumber: this.add.borrowNumber.newVal,
+        remark: null
+      }
       //判断检查信息，发送弹窗
       if (msg !== "correct") {
         this.warningPopUp(msg, "修改失败")
         return
       }
-
+      new Promise((resolve, reject) => {
+        //应该使用put
+        axios.post('/ToHost/addBook', book).then(value => {
+          if (value.data.code != 200) {
+            reject()
+          }
+          resolve()
+        }, reason => {
+          this.errorPopUp('网络异常', '添加失败')
+        })
+      }).then(value => {
+        this.successPopUp('数据已更新！', '添加成功')
+        this.request()
+        this.closeAdd()
+      }, reason => {
+        this.errorPopUp('数据添加时出现异常（该书可能已存在！）', '添加失败')
+      })
       //合法数据将发送给服务器，进行下一步判断
       this.closeModify()
-      return this.successPopUp("已成功修改数据", '修改成功')
 
     },
     handelDelete(index, row) {
       let d = ElMessageBox.confirm(
-          '你是否要删除此记录（该操作不可逆转）?',
+          '确认要删除此记录（该找不可逆）?',
           '警告',
           {
-            confirmButtonText: '好的',
+            confirmButtonText: '是的',
             cancelButtonText: '算了',
             type: 'warning',
           }
-      )
-      d.then(() => {
-        let p = new Promise((resolve, reject) => {
+      ).then((value) => {
+        new Promise((resolve, reject) => {
           axios.delete('/ToHost/deleteBook', {
             params: {
               bookId: row.bookId
             }
-          })
-          p.then(value => {
-            if (value.data.code !== 200) {
-              reject(value.data)
+          }).then(value => {
+            if (value.data.code != 200) {
+              reject()
             }
-            resolve(value.data)
-          }, (reason) => {
-            console.log(reason)
-            this.errorPopUp('网络未响应', '删除失败')
-            reject(reason.data)
+            resolve()
+          }, reason => {
+            this.errorPopUp("网络异常", '删除失败')
           })
-
-
-          p.then((value) => {
-            console.log('服务器删除异常' + value)
-            ElMessage({
-              type: 'success',
-              message: '删除完成！',
-            })
-          }, (reason) => {
-            console.log(reason)
-            ElMessage({
-              type: 'info',
-              message: '取消删除'
-            })
-          })
+        }).then(value1 => {
+          this.successPopUp('数据已更新', '删除成功')
+          this.request()
+        }, reason => {
+          this.errorPopUp('删除失败（可能存在依赖）', '删除失败')
         })
-
-      })
-
-
-      d.catch(() => {
+      }, reason => {
         ElMessage({
           type: 'info',
-          message: '取消删除'
+          message: '取消删除',
+        })
+      })
+    },
+    request() {
+      new Promise(() => {
+        axios.get('/ToHost/getAllBooks').then(value => {
+          this.$store.commit('UPDATE_BOOK_LIST', value.data.data)
+        }, () => {
+          this.errorPopUp('数据请求失败', '网络异常')
         })
       })
     }
+
   },
   mounted() {
     this.icon.Search = Search
-    new Promise(() => {
-      axios.get('/ToHost/getAllBooks').then(value => {
-        this.$store.commit('UPDATE_BOOK_LIST', value.data.data)
-      }, () => {
-        this.errorPopUp('数据请求失败', '网络异常')
-      })
-    })
+    this.request()
   }
 
 }

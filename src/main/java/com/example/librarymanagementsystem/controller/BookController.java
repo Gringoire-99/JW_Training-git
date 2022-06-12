@@ -5,10 +5,7 @@ import com.example.librarymanagementsystem.common.Result;
 import com.example.librarymanagementsystem.model.Book;
 import com.example.librarymanagementsystem.service.Imp.BookServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +30,26 @@ public class BookController {
             return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
         }
         return new Result<>(ErrorStatus.OK);
+    }
+
+    @PostMapping("/updateBook")
+    public Result<Book> updateBook(@RequestBody Book book) {
+        try {
+            bookServiceImp.updateBook(book);
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        return new Result<>(ErrorStatus.OK);
+    }
+
+    @PostMapping("/addBook")
+    public Result<Book> addBook(@RequestBody Book book) {
+        try {
+            bookServiceImp.addBook(book);
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        return new Result<>(ErrorStatus.OK);
+
     }
 }

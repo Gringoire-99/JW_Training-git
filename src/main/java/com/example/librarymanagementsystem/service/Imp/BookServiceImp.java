@@ -16,7 +16,7 @@ public class BookServiceImp implements BookService {
 
     @Override
     public void addBook(Book book) {
-
+        bookMapper.insert(book);
     }
 
     @Override
@@ -28,6 +28,9 @@ public class BookServiceImp implements BookService {
 
     @Override
     public void updateBook(Book book) {
+        QueryWrapper<Book> qw = new QueryWrapper<>();
+        qw.eq("book_id", book.getBookId());
+        bookMapper.update(book, qw);
 
     }
 

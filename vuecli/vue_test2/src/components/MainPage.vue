@@ -87,7 +87,7 @@
         </el-scrollbar>
       </el-aside>
       <el-main>
-        <router-view></router-view>
+        <router-view v-if="isRouterAlive"></router-view>
       </el-main>
     </el-container>
   </div>
@@ -101,9 +101,13 @@ import {ElNotification} from 'element-plus'
 export default {
   name: "MainPage",
   data() {
-    return {}
+    return {isRouterAlive: true}
   },
   methods: {
+    reload() {
+      this.isRouterAlive = false
+      this.$nextTick(() => (this.isRouterAlive = true))
+    },
     pushHomePage() {
       this.$router.push({
         name: 'HomePage',
@@ -197,7 +201,7 @@ export default {
       this.$store.state.user.gender = localStorage.getItem('gender')
       this.$store.state.user.birthdate = localStorage.getItem('birthdate')
     } else {
-      this.warningPopUp('您还未登录，仅能访问部分资源','未登录')
+      this.warningPopUp('您还未登录，仅能访问部分资源', '未登录')
     }
   }
 
