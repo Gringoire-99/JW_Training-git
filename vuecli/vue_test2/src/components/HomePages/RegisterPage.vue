@@ -115,12 +115,20 @@
 
 <script>
 import axios from "axios";
+import {ElNotification} from "element-plus";
+
 const checkData = function (data) {
-  console.log(data.userName);
-  if (data===null)return false
-  if (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.userName)){
+  if (data === null) return false
+  if (!/^\d{6,20}$/.test(data.userId)) {
+    return 'Id长度为6-20位，只能包含数字'
+  }
+  if (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.userName)) {
     return '姓名为空或包含非法字符'
   }
+  if (!/^[A-Za-z\d_ ]{6,30}$/.test(data.userPassword)) {
+    return '密码长度为6-30位，且不能包含特殊字符'
+  }
+
   return 'correct'
 
 }
@@ -146,22 +154,73 @@ export default {
   },
   methods: {
     submit() {
-      let user = {}
-      let timer;
-
-      let id = this.form.id;
-      let name = this.form.name;
-      let pwd = this.form.password;
-      let role = this.form.role;
-      if (!checkData()) {
-        this.registerSuccessStatus = false;
-        this.registerFailStatus = true;
-        this.registerMessage = "有空选项"
+      let registerMsg = ''
+      let user = {
+        role:'user',
+        birthdate:null,
+        gender:null,
+        remark:null
+      }
+      user.userId = this.form.id;
+      user.userName = this.form.name;
+      user.userPassword = this.form.password;
+      registerMsg = checkData(user)
+      if (registerMsg !== 'correct') {
+        this.warningPopUp(registerMsg,'注册失败')
+        this.registerMessage = registerMsg
+        this.registerFailStatus = true
+        this.registerSuccessStatus =false
         return
       }
+      new Promise((resolve, reject) => {
+        axios.post('/ToHost/register',user).then(value => {
+          if (value.data.code!==200){
+            reject()
+          }
+          resolve(value.data)
+        },reason => {
+          this.errorPopUp(reason.code,'网络请求失败')
+        })
+      }).then(value => {
+        this.successPopUp('即将跳转页面','注册成功')
+        console.log(value);
+        localStorage.setItem('userName', value.data.userName)
+        localStorage.setItem('userId', value.data.userId)
+        localStorage.setItem('gender', value.data.gender)
+        localStorage.setItem('remark', value.data.remark)
+        localStorage.setItem('birthdate', value.data.birthdate)
+        localStorage.setItem('role', value.data.role) //待加密
+        this.$router.push('/UserPage')
+        setTimeout(()=>{
+          location.reload()
+        },500)
+      },() => {
+        this.errorPopUp('该用户已存在','注册失败')
+      })
 
-    }
-  }
+    },
+    warningPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'warning',
+      })
+    },
+    errorPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'error',
+      })
+    },
+    successPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'success',
+      })
+    },
+  },
 }
 </script>
 

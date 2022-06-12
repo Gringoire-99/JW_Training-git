@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS user
     role          VARCHAR(10) DEFAULT 'user',
     remark        TEXT,
     CONSTRAINT CHECK ( role = 'user' OR role = 'admin'),
-    CONSTRAINT CHECK ( gender = '男' OR role = '女')
+    CONSTRAINT CHECK ( gender = 'male' OR gender = 'female')
 );
 CREATE TABLE IF NOT EXISTS borrow_record
 (
@@ -145,5 +145,4 @@ INSERT INTO library_management_system.book(book_name, book_author, book_price, p
     ('人生的智慧', '(德)叔本华 ', 264, 'XX出版社', 522, 379, '即使不能拥有完美的生活，所幸追求过完整的自我'),
     ('四世同堂', '老舍 ', 243, 'XX出版社', 2110, 1710, '探索中年的虚无、困惑、野心和近乎残暴的爱'),
     ('美丽新世界', '[英] 赫胥黎 ', 283, 'XX出版社', 1242, 465, '一个淡泊清透的世界');
-
 

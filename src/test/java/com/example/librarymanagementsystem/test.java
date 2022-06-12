@@ -81,5 +81,14 @@ class LibraryManagementSystemApplicationTests {
         user.setGender(null);
         userServiceImp.updateUser(user);
     }
+
+    @Test
+    void register() {
+        User user = new User();
+        user.setUserId(999L);
+        user.setUserName("test");
+        user.setUserPassword("test");
+        userServiceImp.addUser(user);
+    }
 }
 

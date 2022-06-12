@@ -53,8 +53,22 @@ public class UserController {
         return userDetailResult;
     }
 
+    //should be put(need to be fixed)
     @PostMapping("/updateUser")
     public void updateUser(@RequestBody User user) {
         userServiceImp.updateUser(user);
+    }
+
+    @PostMapping("/register")
+    public Result<User> register(@RequestBody User user) {
+        try {
+            userServiceImp.addUser(user);
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        Result<User> userResult = new Result<>(ErrorStatus.OK);
+        user.setUserPassword(null);
+        userResult.setData(user);
+        return userResult;
     }
 }

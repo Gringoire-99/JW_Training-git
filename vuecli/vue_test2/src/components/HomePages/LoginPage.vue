@@ -25,7 +25,7 @@
                     <el-input v-model="form.id" type="number"/>
                   </el-tooltip>
                 </el-form-item>
-                <el-form-item  label="密码">
+                <el-form-item label="密码">
                   <el-tooltip
                       class="box-item"
                       content="请输入您的密码"
@@ -46,7 +46,7 @@
                       @confirm="logout"
                   >
                     <template #reference>
-                    <el-button>{{ isLogin ? '退出登录' : '取消' }}</el-button>
+                      <el-button>{{ isLogin ? '退出登录' : '取消' }}</el-button>
                     </template>
                   </el-popconfirm>
                 </el-form-item>
@@ -145,7 +145,7 @@ export default {
     isLogin() {
       return this.$store.state.isLogin
     },
-    userId(){
+    userId() {
       return this.$store.state.userId
     }
   },
@@ -204,7 +204,6 @@ export default {
       }).
           //是否能登录到服务器
           then(data => {
-            console.log("登录成功", data.data)
             localStorage.setItem('userName', data.data.userName)
             localStorage.setItem('userId', data.data.userId)
             localStorage.setItem('gender', data.data.gender)
@@ -217,18 +216,27 @@ export default {
             //改变动画样式
             this.status = this.progressStatus['success']
             //等待两秒关闭进度条动画
-            setTimeout(() => {
+            new Promise((resolve)=>{
+              setTimeout(() => {
+                resolve()
+              }, 2000)
+            }).then(()=>{
               setTimeout(() => {
                 clearInterval(timer)
                 this.loginStatusSuccess = false
                 this.showProgress = false
                 this.status = ''
                 this.progress = 0;
-                location.reload()
-              }, 1500)
-            }, 2000)
+                this.$router.push('/UserPage')
+                setTimeout(() => {
+                  location.reload()
+                }, 500)
+              }, 1000)
+            })
+
+
+
           }, reason => {
-            console.log('登录失败：账号或密码错误')
             this.loginMessage = '账号或密码错误 code:' + reason.code
             this.loginStatusFail = true
             this.loginStatusSuccess = false
