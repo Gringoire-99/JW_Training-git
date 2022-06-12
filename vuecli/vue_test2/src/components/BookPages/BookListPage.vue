@@ -18,7 +18,7 @@
             <el-menu-item index="1" @click="openFilter">筛选</el-menu-item>
             <el-menu-item index="2" @mouseenter="openSearch">搜索</el-menu-item>
             <el-menu-item index="3" @click="reset();successPopUp('已重置筛选项！','重置')">重置</el-menu-item>
-            <el-menu-item index="4" @click="openAdd">添加</el-menu-item>
+            <el-menu-item index="4" @click="openAdd" v-show="isAuth">添加</el-menu-item>
           </el-menu>
 
         </el-header>
@@ -192,11 +192,21 @@
             <el-table-column fixed="right" label="操作" width="120">
               <template #default="scope">
                 <el-button link type="primary" @click="handleModify(scope.$index, scope.row);openModify()"
+                           v-show="isAuth"
                 >修改
                 </el-button
                 >
-                <el-button link type="primary" @click="handelDelete(scope.$index, scope.row);"
+                <el-button link type="primary" @click="handelDelete(scope.$index, scope.row);" v-show="isAuth"
                 >删除
+                </el-button
+                >
+
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="借阅" width="120">
+              <template #default="scope">
+                <el-button link type="primary" @click="handleBorrow(scope.$index, scope.row);"
+                >借阅
                 </el-button
                 >
               </template>
@@ -433,6 +443,22 @@ let checkData = function (data) {
   }
   return "correct"
 }
+
+Date.prototype.Format = function (fmt) {
+  let o = {
+    "M+": this.getMonth() + 1, //月份
+    "d+": this.getDate(), //日
+    "H+": this.getHours(), //小时
+    "m+": this.getMinutes(), //分
+    "s+": this.getSeconds(), //秒
+    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+    "S": this.getMilliseconds() //毫秒
+  };
+  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+  for (let k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+  return fmt;
+}
 export default {
   name: "BookListPage",
   data() {
@@ -585,6 +611,9 @@ export default {
     },
     total() {
       return this.filterList.length
+    },
+    isAuth() {
+      return this.$store.state.user.role === 'admin'
     }
   },
   methods: {
@@ -782,7 +811,47 @@ export default {
           this.errorPopUp('数据请求失败', '网络异常')
         })
       })
-    }
+    },
+    handleBorrow(index, row) {
+      let d = ElMessageBox.confirm(
+          '要借阅这本书吗?',
+          '询问',
+          {
+            confirmButtonText: '是的',
+            cancelButtonText: '算了',
+            type: 'info',
+          }
+      ).then((value) => {
+        let borrowDate = '2023-6-15'
+        let returnDate = '2023-6-20'
+        let borrowRecord={
+          borrowBookId:row.bookId,
+          borrowUserId:this.$store.state.user.userId,
+          borrowDate,
+          returnDate
+        }
+        new Promise((resolve, reject) => {
+          axios.post('/ToHost/borrowBook',borrowRecord).then(value => {
+            if (value.data.code != 200) {
+              reject()
+            }
+            resolve()
+          }, reason => {
+            this.errorPopUp("网络异常", '借阅失败')
+          })
+        }).then(value1 => {
+          this.successPopUp('数据已更新', '借阅成功')
+          this.request()
+        }, reason => {
+          this.errorPopUp('借阅失败（可能存在未还的同类书）', '借阅失败')
+        })
+      }, reason => {
+        ElMessage({
+          type: 'info',
+          message: '取消借阅',
+        })
+      })
+    },
 
   },
   mounted() {
