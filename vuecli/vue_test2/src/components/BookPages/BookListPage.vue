@@ -46,11 +46,11 @@
 
             </div>
           </transition>
-          <el-table :data="filterList" style="width: 100%"
+          <el-table :data="pageList" style="width: 100%"
                     :stripe="true"
                     :border="true"
-                    height="700"
-                    max-height="700"
+                    height="600"
+                    max-height="600"
                     :default-sort="{ prop: 'bookId', order: 'descending' }"
           >
             <!--     折叠子面板      -->
@@ -84,10 +84,10 @@
                     <el-main>
                       <div class="hvr-backward">
                         <h4><span style="color: cornflowerblue">
-                        图书简介
+                       图书简介
                       </span></h4>
                         <span>
-                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid culpa dolore earum esse et eum
+                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aliquid culpa dolore earum esse et eum
                       expedita, fugit iste laudantium libero molestias optio reiciendis veniam voluptate! Eos ex
                       provident saepe?Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad cum id modi, molestiae nostrum rerum soluta. Corporis, dicta eveniet fugiat magnam maxime minima nam nesciunt porro, quas reprehenderit ullam!
                       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolores eius enim est, excepturi exercitationem explicabo illo inventore ipsa labore laboriosam magnam neque quas qui, quisquam reiciendis repellat similique voluptas.
@@ -194,6 +194,10 @@
               <template #default="scope">
                 <el-button link type="primary" @click="handleModify(scope.$index, scope.row);openModify()"
                 >修改
+                </el-button
+                >
+                <el-button link type="primary" @click="handelDelete(scope.$index, scope.row);"
+                >删除
                 </el-button
                 >
               </template>
@@ -388,8 +392,17 @@
               </div>
             </el-card>
           </el-drawer>
-
         </el-main>
+        <el-footer>
+          <el-pagination
+              v-model:currentPage="currentPage"
+              v-model:page-size="pageSize"
+              :page-sizes="[20,40, 80, 120, 200]"
+              :background="true"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+          />
+        </el-footer>
       </el-container>
 
     </div>
@@ -399,6 +412,8 @@
 <script>
 import {Search} from '@element-plus/icons-vue'
 import {ElNotification} from 'element-plus'
+import axios from "axios";
+import {ElMessage, ElMessageBox} from 'element-plus'
 
 let propMap = new Map()
 propMap.set("书名", "bookName")
@@ -423,6 +438,11 @@ export default {
   name: "BookListPage",
   data() {
     return {
+      icon: {
+        Search
+      },
+      currentPage: 1,
+      pageSize: 20,
 
       score: 0,
       scoreColors: ['#99A9BF', '#f68402', '#ff0026'],
@@ -543,14 +563,29 @@ export default {
       let keyProp = propMap.get(this.keyProp)
       let keyWord = this.keyWord
 
-      let fl = bookList.filter((book) => {
+      let fl
+      fl = bookList.filter((book) => {
         return book.bookPrice >= this.filters.price.lowest && book.bookPrice <= this.filters.price.highest
             && book.bookNumber >= this.filters.bookNumber.lowest && book.bookNumber <= this.filters.bookNumber.highest
             && book.borrowNumber >= this.filters.borrowNumber.lowest && book.borrowNumber <= this.filters.borrowNumber.highest
       });
 
       fl = fl.filter((book) => ("" + book[keyProp]).indexOf(keyWord) !== -1)
+
+
       return fl;
+    },
+    pageList() {
+      let currentPage = this.currentPage
+      let pageSize = this.pageSize
+      let start = (currentPage - 1) * pageSize
+      let end = currentPage * pageSize - 1
+      let fl = this.filterList
+      fl = fl.slice(start, end)
+      return fl
+    },
+    total() {
+      return this.filterList.length
     }
   },
   methods: {
@@ -608,6 +643,13 @@ export default {
         type: 'success',
       })
     },
+    errorPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'error',
+      })
+    },
     handleModify(index, row) {
       this.modify.bookId.oldVal = this.modify.bookId.newVal = row.bookId
       this.modify.bookName.oldVal = this.modify.bookName.newVal = row.bookName
@@ -647,8 +689,70 @@ export default {
       return this.successPopUp("已成功修改数据", '修改成功')
 
     },
-  }, mounted() {
-    this.Search = Search
+    handelDelete(index, row) {
+      let d = ElMessageBox.confirm(
+          '你是否要删除此记录（该操作不可逆转）?',
+          '警告',
+          {
+            confirmButtonText: '好的',
+            cancelButtonText: '算了',
+            type: 'warning',
+          }
+      )
+      d.then(() => {
+        let p = new Promise((resolve, reject) => {
+          axios.delete('/ToHost/deleteBook', {
+            params: {
+              bookId: row.bookId
+            }
+          })
+          p.then(value => {
+            if (value.data.code !== 200) {
+              reject(value.data)
+            }
+            resolve(value.data)
+          }, (reason) => {
+            console.log(reason)
+            this.errorPopUp('网络未响应', '删除失败')
+            reject(reason.data)
+          })
+
+
+          p.then((value) => {
+            console.log('服务器删除异常' + value)
+            ElMessage({
+              type: 'success',
+              message: '删除完成！',
+            })
+          }, (reason) => {
+            console.log(reason)
+            ElMessage({
+              type: 'info',
+              message: '取消删除'
+            })
+          })
+        })
+
+      })
+
+
+      d.catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '取消删除'
+        })
+      })
+    }
+  },
+  mounted() {
+    this.icon.Search = Search
+    new Promise(() => {
+      axios.get('/ToHost/getAllBooks').then(value => {
+        this.$store.commit('UPDATE_BOOK_LIST', value.data.data)
+      }, () => {
+        this.errorPopUp('数据请求失败', '网络异常')
+      })
+    })
   }
 
 }

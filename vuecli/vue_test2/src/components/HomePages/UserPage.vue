@@ -271,13 +271,13 @@ export default {
       console.log(user.birthdate)
       console.log(user)
       axios.post('/ToHost/updateUser',user
-      ).then(value => {
+      ).then(() => {
         this.successPopUp('数据已递交', '修改成功')
         localStorage.setItem('userName', user.userName)
         localStorage.setItem('gender', user.gender)
         localStorage.setItem('remark', user.remark)
         localStorage.setItem('birthdate', user.birthdate)
-      }, reason => {
+      }, () => {
         this.errorPopUp('网络未响应', '修改失败')
       })
     }

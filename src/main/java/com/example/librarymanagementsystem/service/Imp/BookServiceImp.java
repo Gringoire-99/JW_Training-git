@@ -21,7 +21,9 @@ public class BookServiceImp implements BookService {
 
     @Override
     public void deleteBook(Long id) {
-
+        QueryWrapper<Book> qw = new QueryWrapper<>();
+        qw.eq("book_id", id);
+        bookMapper.delete(qw);
     }
 
     @Override

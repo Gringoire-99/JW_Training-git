@@ -90,5 +90,10 @@ class LibraryManagementSystemApplicationTests {
         user.setUserPassword("test");
         userServiceImp.addUser(user);
     }
+
+    @Test
+    void deleteBook() {
+        bookServiceImp.deleteBook(2022703L);
+    }
 }
 
