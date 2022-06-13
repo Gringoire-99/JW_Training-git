@@ -5,9 +5,9 @@ import com.example.librarymanagementsystem.common.Result;
 import com.example.librarymanagementsystem.model.BorrowRecord;
 import com.example.librarymanagementsystem.service.Imp.BorrowBookRecordImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class BorrowRecordController {
@@ -23,5 +23,28 @@ public class BorrowRecordController {
             return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
         }
         return new Result<>(ErrorStatus.OK);
+    }
+
+    @DeleteMapping("/returnBook")
+    public Result<BorrowRecord> returnBook(@RequestParam Long userId, @RequestParam Long bookId) {
+        try {
+            borrowBookRecordImp.returnBook(userId, bookId);
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        return new Result<>(ErrorStatus.OK);
+    }
+
+    @GetMapping("/getAllRecord")
+    public Result<List<BorrowRecord>> getAllRecord() {
+        List<BorrowRecord> allRecords;
+        try {
+            allRecords = borrowBookRecordImp.getAllRecords();
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        Result<List<BorrowRecord>> listResult = new Result<>(ErrorStatus.OK);
+        listResult.setData(allRecords);
+        return listResult;
     }
 }

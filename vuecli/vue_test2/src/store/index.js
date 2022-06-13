@@ -11,11 +11,16 @@ const mutations = {
     UPDATE_BOOK_LIST(state, list) {
         state.bookList=list
     },
+    UPDATE_BOOK_RECORD(state, list) {
+        state.bookRecord=list
+    },
 
 }
 const state = {
-    //只是为了展示容器，待重构
     bookList: [
+
+    ],
+    bookRecord: [
 
     ],
     //只是用于展示容器 - 待重构

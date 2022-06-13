@@ -258,18 +258,14 @@ export default {
       user.userId =this.form.userId
       user.userPassword = null
       user.gender = this.form.gender==='null'?null:this.form.gender
-      console.log(this.form.birthdate)
       user.birthdate = this.form.birthdate==='null'?null:this.form.birthdate.toString()
       user.remark = this.form.remark==='null'?null:this.form.remark
       updateMsg = checkData(user)
-      console.log(updateMsg)
       if (updateMsg !=='correct'){
         this.warningPopUp(updateMsg,'输入有误')
         return
       }
 
-      console.log(user.birthdate)
-      console.log(user)
       axios.post('/ToHost/updateUser',user
       ).then(() => {
         this.successPopUp('数据已递交', '修改成功')
@@ -295,7 +291,6 @@ export default {
             userId: this.form.userId
           }
         }).then(value => {
-          console.log(value);
           if (value.data.code !== 200) {
             this.errorPopUp('获取时发生错误', '获取信息失败')
             return

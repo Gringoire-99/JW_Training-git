@@ -189,14 +189,14 @@
             <el-table-column label="库存" prop="bookNumber" sortable/>
             <el-table-column label="出版社" prop="press" sortable/>
             <el-table-column label="借阅数" prop="borrowNumber" sortable/>
-            <el-table-column fixed="right" label="操作" width="120">
+            <el-table-column fixed="right" label="操作" width="120" v-if="isAuth">
               <template #default="scope">
-                <el-button link type="primary" @click="handleModify(scope.$index, scope.row);openModify()"
-                           v-show="isAuth"
+                <el-button link type="primary" @click="handleModify(scope.$index, scope.row);openModify()" v-if="isAuth"
+
                 >修改
                 </el-button
                 >
-                <el-button link type="primary" @click="handelDelete(scope.$index, scope.row);" v-show="isAuth"
+                <el-button link type="primary" @click="handelDelete(scope.$index, scope.row);"
                 >删除
                 </el-button
                 >
@@ -207,6 +207,10 @@
               <template #default="scope">
                 <el-button link type="primary" @click="handleBorrow(scope.$index, scope.row);"
                 >借阅
+                </el-button
+                >
+                <el-button link type="primary" @click="handleReturn(scope.$index, scope.row);"
+                >还书
                 </el-button
                 >
               </template>
@@ -824,14 +828,14 @@ export default {
       ).then((value) => {
         let borrowDate = '2023-6-15'
         let returnDate = '2023-6-20'
-        let borrowRecord={
-          borrowBookId:row.bookId,
-          borrowUserId:this.$store.state.user.userId,
+        let borrowRecord = {
+          borrowBookId: row.bookId,
+          borrowUserId: this.$store.state.user.userId,
           borrowDate,
           returnDate
         }
         new Promise((resolve, reject) => {
-          axios.post('/ToHost/borrowBook',borrowRecord).then(value => {
+          axios.post('/ToHost/borrowBook', borrowRecord).then(value => {
             if (value.data.code != 200) {
               reject()
             }
@@ -852,11 +856,50 @@ export default {
         })
       })
     },
+    handleReturn(index, row) {
+      //实际需要引入密钥
+      let d = ElMessageBox.confirm(
+          '要归还这本书吗?',
+          '询问',
+          {
+            confirmButtonText: '是的',
+            cancelButtonText: '算了',
+            type: 'info',
+          }
+      ).then((value) => {
+        let userId = this.$store.state.user.userId
+        let bookId = row.bookId
+        new Promise((resolve, reject) => {
+          axios.delete('/ToHost/returnBook', {
+            params: {
+              userId,
+              bookId,
+            }
+          }).then(value => {
+            if (value.data.code != 200) {
+              reject()
+            }
+            resolve()
+          }, reason => {
+            this.errorPopUp("网络异常", '归还失败')
+          })
+        }).then(value1 => {
+          this.successPopUp('数据已更新', '归还成功')
+          this.request()
+        }, reason => {
+          this.errorPopUp('（可能已全部归还）', '归还失败')
+        })
+      }, reason => {
+        ElMessage({
+          type: 'info',
+          message: '取消还书',
+        })
+      })
+    },
 
   },
   mounted() {
     this.icon.Search = Search
-    this.request()
   }
 
 }

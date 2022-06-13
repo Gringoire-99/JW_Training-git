@@ -48,8 +48,6 @@ public class BookServiceImp implements BookService {
 
     @Override
     public List<Book> getAllBook() {
-        QueryWrapper<Book> qw = new QueryWrapper<>();
-        List<Book> books = bookMapper.selectList(qw);
-        return books;
+        return bookMapper.selectList(null);
     }
 }

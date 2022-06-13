@@ -28,4 +28,17 @@ public class BorrowBookRecordImp implements BorrowBookService {
         qw.eq("borrow_user_id", userId);
         return borrowRecordMapper.selectList(qw);
     }
+
+    @Override
+    public void returnBook(Long userId, Long bookId) {
+        QueryWrapper<BorrowRecord> qw = new QueryWrapper<>();
+        qw.eq("borrow_user_id", userId);
+        qw.eq("borrow_book_id", bookId);
+        borrowRecordMapper.delete(qw);
+    }
+
+    @Override
+    public List<BorrowRecord> getAllRecords() {
+        return borrowRecordMapper.selectList(null);
+    }
 }

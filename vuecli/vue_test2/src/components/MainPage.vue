@@ -97,6 +97,7 @@
 import 'animate.css'
 import 'hover.css'
 import {ElNotification} from 'element-plus'
+import axios from "axios";
 
 export default {
   name: "MainPage",
@@ -187,9 +188,30 @@ export default {
         message,
         type: 'success',
       })
-    }
+    },
+    requestBookList() {
+      new Promise(() => {
+        axios.get('/ToHost/getAllBooks').then(value => {
+          this.$store.commit('UPDATE_BOOK_LIST', value.data.data)
+        }, () => {
+          this.errorPopUp('数据请求失败', '网络异常')
+        })
+      })
+    },
+    requestBookRecord() {
+      new Promise(() => {
+        axios.get('/ToHost/getAllRecord').then(value => {
+          this.$store.commit('UPDATE_BOOK_RECORD', value.data.data)
+        }, () => {
+          this.errorPopUp('数据请求失败', '网络异常')
+        })
+      })
+    },
+
   },
   mounted() {
+    this.requestBookList()
+    this.requestBookRecord();
     //在页面加载时，判断用户权限（游客，用户，管理员），在后端读取用户信息，初始化用户信息
     let name = localStorage.getItem('userName')
     if (name != null) {

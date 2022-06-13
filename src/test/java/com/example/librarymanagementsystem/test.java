@@ -95,5 +95,19 @@ class LibraryManagementSystemApplicationTests {
     void deleteBook() {
         bookServiceImp.deleteBook(2022703L);
     }
+
+    @Test
+    void addRecord() {
+        BorrowRecord borrowRecord = new BorrowRecord(2022652L, 444444444L, "2022-6-12", "2022-6-13");
+        borrowBookRecordImp.addRecord(borrowRecord);
+    }
+
+    @Test
+    void getAllRecord() {
+        for (BorrowRecord allRecord : borrowBookRecordImp.getAllRecords()) {
+            System.out.println(allRecord);
+        }
+
+    }
 }
 
