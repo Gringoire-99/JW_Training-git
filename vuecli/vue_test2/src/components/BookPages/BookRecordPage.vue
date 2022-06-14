@@ -15,9 +15,7 @@
               text-color="#fff"
               active-text-color="#ffd04b"
           >
-            <el-menu-item index="1" @click="openFilter">筛选</el-menu-item>
             <el-menu-item index="2" @mouseenter="openSearch">搜索</el-menu-item>
-            <el-menu-item index="3" @click="reset();successPopUp('已重置筛选项！','重置')">重置</el-menu-item>
             <el-menu-item index="4" @click="openAdd">添加</el-menu-item>
           </el-menu>
 
@@ -85,7 +83,7 @@
                 <el-descriptions
                     class="margin-top"
                     title="旧数据"
-                    :column="3"
+                    :column="2"
                     border
                 >
                   <el-descriptions-item v-for="(prop,index) in modify" :key='index'>
@@ -101,7 +99,7 @@
                 <el-descriptions
                     class="margin-top"
                     title="新数据"
-                    :column="3"
+                    :column="2"
                     border
                 >
                   <el-descriptions-item v-for="(prop,index) in modify" :key='index'>
@@ -144,7 +142,7 @@
                 <el-descriptions
                     class="margin-top"
                     title="新数据"
-                    :column="3"
+                    :column="2"
                     border
                 >
                   <el-descriptions-item v-for="(prop,index) in add" :key='index'>
@@ -162,7 +160,7 @@
                     confirm-button-text="是"
                     cancel-button-text="算了"
                     icon-color="#626AEF"
-                    title="确定要添加书籍信息吗？"
+                    title="确定要添加借阅信息吗？"
                     @confirm="submitAdd"
                 >
                   <template #reference>
@@ -191,21 +189,24 @@
 </template>
 
 <script>
-import {ElNotification} from "element-plus";
+import {ElMessage, ElMessageBox, ElNotification} from "element-plus";
+import axios from "axios";
 
 let propMap = new Map()
-propMap.set("书号", "bookId")
-propMap.set("学号", "userId")
-propMap.set("归还时间", "returnDate")
+propMap.set("图书Id", "borrowBookId")
+propMap.set("用户Id", "borrowUserId")
+propMap.set("还书时间", "returnDate")
 propMap.set("借书时间", "borrowDate")
 let checkData = function (data) {
   //数值性数据验证
-  if ((!/^\d+$/.test("" + data.bookId.newVal)) || (!/^\d+$/.test("" + data.bookNumber.newVal)) || (!/^\d+$/.test("" + data.borrowNumber.newVal)) || (!/^\d+$/.test("" + data.bookPrice.newVal))) {
+  if ((!/^\d+$/.test("" + data.bookId.newVal)) ||(!/^\d+$/.test("" + data.userId.newVal)) ) {
     return "含有错误数据"
   }
   //字符串性数据验证
-  if ((!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.press.newVal)) || (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.press.newVal)) || (!/^[\u4E00-\u9FA5A-Za-z\d_ ]+$/.test(data.bookName.newVal))) {
-    return "含有错误数据"
+  let checkDate = /(((\d{3}[1-9]|\d{2}[1-9]\d{1}|\d{1}[1-9]\d{2}|[1-9]\d{3})-(((0[13578]|1[02])-(0[1-9]|[12]\d|3[01]))|((0[469]|11)-(0[1-9]|[12]\d|30))|(02-(0[1-9]|1\d|2[0-8]))))|(((\d{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))/
+
+  if ((!checkDate.test(data.borrowDate.newVal)) || (!checkDate.test(data.returnDate.newVal))) {
+    return "日期格式错误"
   }
   return "correct"
 }
@@ -225,13 +226,9 @@ export default {
       filters: {
         userId: {
           name: '用户Id',
-          lowest: 0,
-          highest: Number.MAX_VALUE,
         },
         bookId: {
           name: '图书Id',
-          lowest: 0,
-          highest: Number.MAX_VALUE,
         },
         borrowDate: {
           name: '借书时间'
@@ -333,20 +330,6 @@ export default {
     closeAdd() {
       this.isOpenAdd = false
     },
-    reset() {
-      this.filters = {
-        userId: {
-          name: '用户Id',
-          lowest: 0,
-          highest: Number.MAX_VALUE,
-        },
-        bookId: {
-          name: '图书Id',
-          lowest: 0,
-          highest: Number.MAX_VALUE,
-        },
-      }
-    },
     warningPopUp(message, title) {
       ElNotification({
         title,
@@ -367,8 +350,135 @@ export default {
         message,
         type: 'error',
       })
+    },handleModify(index, row) {
+      this.modify.bookId.oldVal = this.modify.bookId.newVal = row.borrowBookId
+      this.modify.userId.oldVal = this.modify.userId.newVal = row.borrowUserId
+      this.modify.returnDate.oldVal = this.modify.returnDate.newVal = row.returnDate
+      this.modify.borrowDate.oldVal = this.modify.borrowDate.newVal = row.borrowDate
     },
-  }
+    submitModify() {
+      //检验数据完整性
+      let msg = checkData(this.modify)
+
+      //判断检查信息，发送弹窗
+      if (msg !== "correct") {
+        this.warningPopUp(msg, "修改失败")
+        return
+      }
+      let record = {
+        borrowBookId: this.modify.bookId.newVal,
+        borrowUserId: this.modify.userId.newVal,
+        returnDate: this.modify.returnDate.newVal,
+        borrowDate: this.modify.borrowDate.newVal,
+      }
+
+      new Promise((resolve, reject) => {
+        //应该使用put
+        axios.post('/ToHost/updateRecord', record).then(value => {
+          if (value.data.code != 200) {
+            reject()
+          }
+          resolve()
+        }, reason => {
+          this.errorPopUp('网络异常', '更新失败')
+        })
+      }).then(value => {
+        this.successPopUp('数据已更新！', '更新成功')
+        this.request()
+        this.closeModify()
+      }, reason => {
+        this.errorPopUp('数据更新时出现异常', '更新失败')
+      })
+
+      //合法数据将发送给服务器，进行下一步判断
+
+    },
+    request() {
+      new Promise(() => {
+        axios.get('/ToHost/getAllRecord').then(value => {
+          this.$store.commit('UPDATE_BOOK_RECORD', value.data.data)
+        }, () => {
+          this.errorPopUp('数据请求失败', '网络异常')
+        })
+      })
+    },
+    submitAdd() {
+      //检验数据完整性
+      let msg = checkData(this.add)
+      //判断检查信息，发送弹窗
+      if (msg !== "correct") {
+        this.warningPopUp(msg, "修改失败")
+        return
+      }
+      let record = {
+        borrowBookId: this.add.bookId.newVal,
+        borrowUserId: this.add.userId.newVal,
+        returnDate: this.add.returnDate.newVal,
+        borrowDate: this.add.borrowDate.newVal,
+      }
+      new Promise((resolve, reject) => {
+        //应该使用put
+        axios.post('/ToHost/borrowBook', record).then(value => {
+          if (value.data.code != 200) {
+            reject()
+          }
+          resolve()
+        }, reason => {
+          this.errorPopUp('网络异常', '添加失败')
+        })
+      }).then(value => {
+        this.successPopUp('数据已更新！', '添加成功')
+        this.request()
+        this.closeAdd()
+      }, reason => {
+        this.errorPopUp('数据添加时出现异常（该记录可能已存在！）', '添加失败')
+      })
+      //合法数据将发送给服务器，进行下一步判断
+      this.closeModify()
+
+    },
+    handelDelete(index, row) {
+      let d = ElMessageBox.confirm(
+          '确认要删除此记录（该找不可逆）?',
+          '警告',
+          {
+            confirmButtonText: '是的',
+            cancelButtonText: '算了',
+            type: 'warning',
+          }
+      ).then((value) => {
+        new Promise((resolve, reject) => {
+          axios.delete('/ToHost/deleteRecord', {
+            params: {
+              borrowBookId: row.borrowBookId,
+              borrowUserId: row.borrowUserId,
+              borrowDate: row.borrowDate+'',
+              returnDate: row.returnDate+''
+            }
+          }).then(value => {
+            if (value.data.code != 200) {
+              reject()
+            }
+            resolve()
+          }, reason => {
+            this.errorPopUp("网络异常", '删除失败')
+          })
+        }).then(value1 => {
+          this.successPopUp('数据已更新', '删除成功')
+          this.request()
+        }, reason => {
+          this.errorPopUp('删除失败（可能存在依赖）', '删除失败')
+        })
+      }, reason => {
+        ElMessage({
+          type: 'info',
+          message: '取消删除',
+        })
+      })
+    },
+
+  },
+
 }
 </script>
 

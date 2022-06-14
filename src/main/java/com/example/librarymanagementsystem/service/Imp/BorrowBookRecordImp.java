@@ -41,4 +41,20 @@ public class BorrowBookRecordImp implements BorrowBookService {
     public List<BorrowRecord> getAllRecords() {
         return borrowRecordMapper.selectList(null);
     }
+
+    @Override
+    public void updateRecord(BorrowRecord borrowRecord) {
+        borrowRecordMapper.insert(borrowRecord);
+    }
+
+    @Override
+    public void deleteRecord(BorrowRecord borrowRecord) {
+        QueryWrapper<BorrowRecord> qw = new QueryWrapper<>();
+        qw.eq("borrow_user_id", borrowRecord.getBorrowUserId());
+        qw.eq("borrow_book_id", borrowRecord.getBorrowBookId());
+        qw.eq("borrow_date", borrowRecord.getBorrowDate());
+        qw.eq("return_date", borrowRecord.getReturnDate());
+
+        borrowRecordMapper.delete(qw);
+    }
 }

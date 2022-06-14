@@ -189,12 +189,19 @@ export default {
         type: 'success',
       })
     },
+    errorPopUp(message, title) {
+      ElNotification({
+        title,
+        message,
+        type: 'error',
+      })
+    },
     requestBookList() {
       new Promise(() => {
         axios.get('/ToHost/getAllBooks').then(value => {
           this.$store.commit('UPDATE_BOOK_LIST', value.data.data)
         }, () => {
-          this.errorPopUp('数据请求失败', '网络异常')
+          this.errorPopUp('图书数据请求失败', '网络异常')
         })
       })
     },
@@ -203,7 +210,7 @@ export default {
         axios.get('/ToHost/getAllRecord').then(value => {
           this.$store.commit('UPDATE_BOOK_RECORD', value.data.data)
         }, () => {
-          this.errorPopUp('数据请求失败', '网络异常')
+          this.errorPopUp('借阅数据请求失败', '网络异常')
         })
       })
     },

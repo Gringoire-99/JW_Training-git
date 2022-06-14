@@ -47,4 +47,25 @@ public class BorrowRecordController {
         listResult.setData(allRecords);
         return listResult;
     }
+
+    @PostMapping("/updateRecord")
+    public Result<BorrowRecord> updateRecord(@RequestBody BorrowRecord borrowRecord) {
+        try {
+            borrowBookRecordImp.updateRecord(borrowRecord);
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        return new Result<>(ErrorStatus.OK);
+    }
+
+    @DeleteMapping("deleteRecord")
+    public Result<BorrowRecord> deleteRecord(@RequestParam Long borrowUserId, @RequestParam Long borrowBookId, @RequestParam String borrowDate, @RequestParam String returnDate) {
+        BorrowRecord newRecord = new BorrowRecord(borrowBookId, borrowUserId, borrowDate, returnDate);
+        try {
+            borrowBookRecordImp.deleteRecord(newRecord);
+        } catch (Exception e) {
+            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+        }
+        return new Result<>(ErrorStatus.OK);
+    }
 }

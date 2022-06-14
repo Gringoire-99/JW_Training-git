@@ -13,4 +13,8 @@ public interface BorrowBookService {
 
     List<BorrowRecord> getAllRecords();
 
+    void updateRecord(BorrowRecord borrowRecord);
+
+    void deleteRecord(BorrowRecord borrowRecord);
+
 }
