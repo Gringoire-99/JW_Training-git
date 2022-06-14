@@ -14,6 +14,8 @@ public class BookController {
     @Autowired
     BookServiceImp bookServiceImp;
 
+    //待增加拦截
+
     @GetMapping("/getAllBooks")
     public Result<List<Book>> getAllBooks() {
         List<Book> allBook = bookServiceImp.getAllBook();
