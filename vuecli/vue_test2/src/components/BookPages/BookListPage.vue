@@ -826,8 +826,8 @@ export default {
             type: 'info',
           }
       ).then((value) => {
-        let borrowDate = '2023-6-15'
-        let returnDate = '2023-6-20'
+        let borrowDate = '2099-6-15'
+        let returnDate = '2099-6-20'
         let borrowRecord = {
           borrowBookId: row.bookId,
           borrowUserId: this.$store.state.user.userId,

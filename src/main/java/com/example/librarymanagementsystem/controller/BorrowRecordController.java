@@ -28,9 +28,10 @@ public class BorrowRecordController {
     @DeleteMapping("/returnBook")
     public Result<BorrowRecord> returnBook(@RequestParam Long userId, @RequestParam Long bookId) {
         try {
-            borrowBookRecordImp.returnBook(userId, bookId);
+            int change = borrowBookRecordImp.returnBook(userId, bookId);
+            if (change == 0) throw new Exception("无借阅记录");
         } catch (Exception e) {
-            return new Result<>(ErrorStatus.SERVICE_UNAVAILABLE);
+            return new Result<>(503, e.getMessage());
         }
         return new Result<>(ErrorStatus.OK);
     }

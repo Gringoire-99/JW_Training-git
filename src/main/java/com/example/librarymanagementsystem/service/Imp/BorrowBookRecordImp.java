@@ -30,11 +30,11 @@ public class BorrowBookRecordImp implements BorrowBookService {
     }
 
     @Override
-    public void returnBook(Long userId, Long bookId) {
+    public int returnBook(Long userId, Long bookId) {
         QueryWrapper<BorrowRecord> qw = new QueryWrapper<>();
         qw.eq("borrow_user_id", userId);
         qw.eq("borrow_book_id", bookId);
-        borrowRecordMapper.delete(qw);
+        return borrowRecordMapper.delete(qw);
     }
 
     @Override

@@ -42,7 +42,7 @@
                       confirm-button-text="确定"
                       cancel-button-text="取消"
                       icon-color="#626AEF"
-                      title="确认要退出吗？"
+                      :title="isLogin?'确认退出吗':'取消登录？'"
                       @confirm="logout"
                   >
                     <template #reference>
@@ -255,8 +255,12 @@ export default {
           })
     },
     logout() {
-      localStorage.clear()
-      location.reload()
+      if (this.isLogin){
+        localStorage.clear()
+        location.reload()
+      }
+      this.form.id=''
+      this.form.password=''
     }
     ,
     pushRegisterPage() {

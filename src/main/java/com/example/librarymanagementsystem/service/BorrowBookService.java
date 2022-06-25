@@ -9,7 +9,7 @@ public interface BorrowBookService {
 
     List<BorrowRecord> getRecord(Long userId);
 
-    void returnBook(Long userId, Long bookId);
+    int returnBook(Long userId, Long bookId);
 
     List<BorrowRecord> getAllRecords();
 
